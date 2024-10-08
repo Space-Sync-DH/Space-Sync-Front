@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cualquier estilo adicional que necesites */
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+body {
+  font-family: 'Bebas Neue', sans-serif; /* Fuente por defecto para el cuerpo */
+  background-size: 300% 300%;
+  animation: gradient 6s ease infinite;
+}
+
+h1, h2, h3, .bebas-font { /* Clases o elementos que usarán Bebas Neue */
+  font-family: 'Bebas Neue', sans-serif;
+}
+
+@layer components {
+  .shadow-custom {
+    box-shadow: inset 6px 6px 14px #919191, inset -6px -6px 14px #ffffff;
+  }
+}
+
+.team-image {
+  transition: transform 0.3s ease; /* Solo el efecto de agrandar */
+}
+
+.team-image:hover {
+  transform: scale(1.1); /* Aumenta el tamaño de la imagen */
+}

@@ -1,0 +1,42 @@
+---
+// LoginForm.astro
+---
+
+<div class="lg:w-1/2 w-full flex items-center justify-center h-full">
+    <div class="lg:p-24 md:p-16 p-8 w-full lg:w-3/4 flex flex-col items-center justify-center bg-white text-black rounded-lg shadow-lg">
+        <h1 class="text-4xl font-bold mb-8 text-center">Inicio de Sesión</h1>
+        <form action="#" method="POST" class="w-full">
+            <div class="mb-6">
+                <label for="username" class="block text-gray-600 text-lg">Usuario</label>
+                <input type="text" id="username" name="username" class="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:border-blue-500" autocomplete="off">
+            </div>
+            <div class="mb-6">
+                <label for="password" class="block text-gray-800 text-lg">Contraseña</label>
+                <input type="password" id="password" name="password" class="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:border-blue-500" autocomplete="off">
+            </div>
+            <div class="mb-6 flex items-center">
+                <input type="checkbox" id="remember" name="remember" class="text-red-500">
+                <label for="remember" class="text-gray-800 ml-2 text-lg">Recuérdame</label>
+            </div>
+
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:space-x-4">
+                <button
+                    class="text-xl flex-1 h-12 rounded bg-emerald-500 text-white relative overflow-hidden group z-10 hover:text-white duration-1000"
+                >
+                    <span class="absolute bg-emerald-600 w-36 h-36 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
+                    <span class="absolute bg-emerald-800 w-36 h-36 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
+                    Login
+                </button>
+                
+                <button
+                    onclick="location.href='/login-admin'"
+                    class="text-xl flex-1 h-12 rounded bg-emerald-500 text-white relative overflow-hidden group z-10 hover:text-white duration-1000 mt-4 sm:mt-0"
+                >
+                    <span class="absolute bg-emerald-600 w-36 h-36 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
+                    <span class="absolute bg-emerald-800 w-36 h-36 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
+                    Empleados
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
