@@ -1,5 +1,5 @@
 module.exports = {
-  content: ["./src/**/*.{astro,js,ts,jsx,tsx}"],
+  content: ["./src/**/*.{astro,js,ts,jsx,tsx}", "./node_modules/flowbite/**/*.js"],
   theme: {
     extend: {
       fontFamily: {
