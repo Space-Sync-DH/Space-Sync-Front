@@ -1,0 +1,75 @@
+---
+import Navbar from '../components/Navbar.astro';
+import Card from '../components/Card.astro';
+import Equipo from '../components/Equipo.astro';
+import PlataformaReservas from '../components/PlataformaReservas.astro';
+import Contacto from '../components/Contacto.astro';
+import Footer from '../Layouts/Footer.astro';
+import '../styles/global.css';
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Space Sync</title>
+    <link rel="icon" href="/logo.png" type="image/x-icon" />
+  </head>
+  <body class="bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 text-white font-sans">
+    <Navbar />
+
+    <main>
+      <!-- Sección Inicio -->
+      <section id="inicio" class="text-center py-12 px-4">
+        <span class="text-5xl font-bold bg-gradient-to-r from-[#00275b] to-[#3871c1] bg-clip-text text-transparent">
+          Space Sync
+        </span>
+        <h2 class="text-2xl lg:text-3xl mt-12">
+          Una innovadora plataforma diseñada para optimizar la
+          <br />
+          <span class="text-blue-700 font-bold">gestión de reservas</span>
+          en entornos educativos y corporativos.
+        </h2>
+
+        <!-- Tarjetas de Misión, Servicios, Valores -->
+        <div class="flex flex-wrap justify-center gap-6 mt-12">
+          <Card 
+            title="¿Quiénes Somos?" 
+            description="Space Sync es una solución tecnológica para optimizar la reserva de espacios de trabajo, facilitando la colaboración y el uso eficiente de los recursos disponibles." 
+            imageSrc="/mision_2.png" 
+          />
+
+          <Card 
+            title="Servicios" 
+            description={`✅ Ver la disponibilidad de salas o aulas en tiempo real.\n✅ Recibe confirmaciones y actualizaciones de tus reservas.\n✅ Reportes Detallados para el uso de los espacios para tomar decisiones informadas y optimizar recursos.`} 
+            imageSrc="/servicios.png" 
+          />
+
+          <Card 
+            title="Misión" 
+            description="Nuestra misión es la innovación y el compromiso con la excelencia. Nos esforzamos por ofrecer un servicio que cumpla con los más altos estándares de calidad." 
+            imageSrc="/innovacion.png" 
+          />
+        </div>
+      </section>
+
+      <!-- Sección Equipo -->
+      <section id="equipo" class="py-12 px-4">
+        <Equipo />
+      </section>
+
+      <!-- Sección Plataforma de Reservas -->
+      <section id="servicios" class="py-12 px-4">
+        <PlataformaReservas />
+      </section>
+
+      <!-- Sección Contacto -->
+      <section id="contacto" class="py-12 px-4">
+        <Contacto />
+      </section>
+    </main>
+
+    <Footer />
+  </body>
+</html>
+

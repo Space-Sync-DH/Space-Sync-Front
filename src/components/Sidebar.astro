@@ -1,0 +1,23 @@
+---
+const menuItems = [
+  { name: "Dashboard", icon: "🏠" },
+  { name: "Reservaciones", icon: "📅" },
+  { name: "Usuarios", icon: "👥" },
+  { name: "Credenciales", icon: "🔑" },
+  { name: "Análisis de Tráfico", icon: "📊" },
+];
+---
+
+<div class="bg-gray-800 text-white w-64 h-screen flex flex-col">
+  <div class="p-4 text-lg font-semibold">Menú</div>
+  <nav class="flex-1">
+    <ul>
+      {menuItems.map(item => (
+        <li class="p-4 hover:bg-gray-700 transition cursor-pointer">
+          <span class="mr-2">{item.icon}</span>
+          {item.name}
+        </li>
+      ))}
+    </ul>
+  </nav>
+</div>
