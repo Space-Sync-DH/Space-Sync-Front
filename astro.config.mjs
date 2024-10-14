@@ -9,4 +9,5 @@ export default defineConfig({
     outDir: './dist', // Define el directorio de salida
   },
   site: 'https://space-sync-dh.github.io', // Define la URL base de tu sitio
+  base: 'Space-Sync-Front/', // Define la URL base de tu sitio
 });
