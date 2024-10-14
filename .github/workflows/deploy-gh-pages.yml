@@ -28,7 +28,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.ACTION_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: .
           publish_branch: gh-pages  # Cambia "main" por la rama a la que deseas desplegar
 
       - name: Actualiza la URL del repositorio
