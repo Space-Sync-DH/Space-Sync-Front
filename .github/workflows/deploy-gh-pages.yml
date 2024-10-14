@@ -1,9 +1,7 @@
 name: Despliegue de GitHub Pages
 
 on:
-  push:
-    branches:
-      - main  # Cambia "main" por la rama desde la cual deseas desplegar
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
