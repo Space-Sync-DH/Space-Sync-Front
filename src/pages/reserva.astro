@@ -11,7 +11,7 @@ import '../styles/global.css';
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Bebas Neue', sans-serif; /* Fuente por defecto para el cuerpo */
+            font-family: 'Bebas Neue', sans-serif;
         }
         .hora-disponible {
             background-color: #38a169; /* Verde */
@@ -98,39 +98,42 @@ import '../styles/global.css';
             verificarDisponibilidad(fecha);
         });
 
-        function verificarDisponibilidad(fecha) {
-            // Simulación de datos de horarios ocupados
-            const horas = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
-            const salas = ['Sala 1', 'Sala 2', 'Sala 3', 'Laboratorio 5', 'CITT'];
+        function verificarDisponibilidad(fecha: any) {
+    const horas = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+    const salas = ['Sala 1', 'Sala 2', 'Sala 3', 'Laboratorio 5', 'CITT'];
 
-            salas.forEach(sala => {
-                const salaDiv = document.createElement('div');
-                salaDiv.classList.add('border', 'border-gray-300', 'p-4', 'rounded', 'mb-4');
-                const tituloSala = document.createElement('h3');
-                tituloSala.classList.add('text-lg', 'font-bold');
-                tituloSala.textContent = sala;
-                salaDiv.appendChild(tituloSala);
+    // Limpiar el contenedor de salas
+    document.getElementById('salasDisponibles').innerHTML = '';
 
-                horas.forEach(hora => {
-                    const horaDiv = document.createElement('div');
-                    horaDiv.classList.add('inline-block', 'border', 'rounded', 'py-2', 'px-4', 'mr-2', 'mb-2', 'cursor-pointer');
-                    horaDiv.textContent = hora;
+    salas.forEach(sala => {
+        const salaDiv = document.createElement('div');
+        salaDiv.classList.add('border', 'border-gray-300', 'p-4', 'rounded', 'mb-4');
+        const tituloSala = document.createElement('h3');
+        tituloSala.classList.add('text-lg', 'font-bold');
+        tituloSala.textContent = sala;
+        salaDiv.appendChild(tituloSala);
 
-                    // Comprobar si la hora está ocupada
-                    if (reservas.some(reserva => reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora)) {
-                        horaDiv.classList.add('hora-ocupada');
-                        horaDiv.textContent += ' - Ocupada';
-                    } else {
-                        horaDiv.classList.add('hora-disponible');
-                        horaDiv.onclick = function() { confirmarReserva(sala, fecha, hora); };
-                    }
+        horas.forEach(hora => {
+            const horaDiv = document.createElement('div');
+            horaDiv.classList.add('inline-block', 'border', 'rounded', 'py-2', 'px-4', 'mr-2', 'mb-2', 'cursor-pointer');
+            horaDiv.textContent = hora;
 
-                    salaDiv.appendChild(horaDiv);
-                });
+            // Comprobar si la hora está ocupada
+            if (reservas.some(reserva => reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora)) {
+                horaDiv.classList.add('hora-ocupada');
+                horaDiv.textContent += ' - Ocupada';
+            } else {
+                horaDiv.classList.add('hora-disponible');
+                horaDiv.onclick = function() { confirmarReserva(sala, fecha, hora); };
+            }
 
-                document.getElementById('salasDisponibles').appendChild(salaDiv);
-            });
-        }
+            salaDiv.appendChild(horaDiv);
+        });
+
+        document.getElementById('salasDisponibles').appendChild(salaDiv);
+    });
+}
+
 
         function confirmarReserva(sala, fecha, hora) {
             const confirmar = confirm(`¿Estás seguro de que deseas reservar ${sala} el ${fecha} a las ${hora}?`);
@@ -139,16 +142,23 @@ import '../styles/global.css';
             }
         }
 
-        function reservar(sala, fecha, hora) {
-            // Agregar la reserva
-            reservas.push({ sala, fecha, hora });
+        function reservar(sala: any, fecha: any, hora: any) {
+    // Comprobar si la reserva ya existe
+    const existeReserva = reservas.some(reserva => reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora);
 
-            // Actualizar el historial de reservas
-            actualizarHistorialReservas();
+    if (!existeReserva) {
+        // Agregar la reserva
+        reservas.push({ sala, fecha, hora });
 
-            alert(`Reserva realizada con éxito para ${sala} el ${fecha} a las ${hora}.`);
-            verificarDisponibilidad(fecha); // Actualizar la disponibilidad
-        }
+        // Actualizar el historial de reservas
+        actualizarHistorialReservas();
+
+        alert(`Reserva realizada con éxito para ${sala} el ${fecha} a las ${hora}.`);
+        verificarDisponibilidad(fecha); // Actualizar la disponibilidad
+    } else {
+        alert(`Ya existe una reserva para ${sala} el ${fecha} a las ${hora}.`);
+    }
+}
 
         function actualizarHistorialReservas() {
             const historialTable = document.getElementById('historialReservas').getElementsByTagName('tbody')[0];
@@ -169,34 +179,32 @@ import '../styles/global.css';
         }
 
         function eliminarReserva(sala, fecha, hora) {
-            reservas = reservas.filter(reserva => !(reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora));
-            actualizarHistorialReservas();
-            alert(`Reserva para ${sala} el ${fecha} a las ${hora} ha sido cancelada.`);
-            verificarDisponibilidad(fecha); // Actualizar la disponibilidad de salas
+            const confirmar = confirm(`¿Estás seguro de que deseas cancelar la reserva para ${sala} el ${fecha} a las ${hora}?`);
+            if (confirmar) {
+                // Filtrar las reservas para eliminar la seleccionada
+                reservas = reservas.filter(reserva => !(reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora));
+                actualizarHistorialReservas();
+                alert(`Reserva para ${sala} el ${fecha} a las ${hora} ha sido cancelada.`);
+                verificarDisponibilidad(fecha); // Actualizar la disponibilidad de salas
+            }
         }
 
         // Manejo de comentarios
         const comentarioForm = document.getElementById('comentarioForm');
         comentarioForm.addEventListener('submit', function(event) {
             event.preventDefault();
-            const comentario = document.getElementById('comentario').value;
-            if (comentario) {
-                comentarios.push(comentario);
-                actualizarComentarios();
+            const comentarioTexto = document.getElementById('comentario').value;
+
+            if (comentarioTexto) {
+                comentarios.push(comentarioTexto);
                 document.getElementById('comentario').value = ''; // Limpiar el campo de comentario
+                actualizarComentarios();
             }
         });
 
         function actualizarComentarios() {
-            const comentariosDiv = document.getElementById('comentariosRecientes');
-            comentariosDiv.innerHTML = '';
-
-            comentarios.forEach(comentario => {
-                const comentarioDiv = document.createElement('div');
-                comentarioDiv.classList.add('border', 'border-gray-300', 'p-2', 'rounded', 'mb-2');
-                comentarioDiv.textContent = comentario;
-                comentariosDiv.appendChild(comentarioDiv);
-            });
+            const comentariosRecientesDiv = document.getElementById('comentariosRecientes');
+            comentariosRecientesDiv.innerHTML = comentarios.map(comentario => `<p>${comentario}</p>`).join('');
         }
     </script>
 </body>
