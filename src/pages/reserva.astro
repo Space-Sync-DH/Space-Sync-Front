@@ -85,8 +85,8 @@ import Footer from '../Layouts/Footer.astro';
         const reservaForm = document.getElementById('reservaForm');
         const comentarioForm = document.getElementById('comentarioForm');
         
-        let reservas = [];
-        let comentarios = [];
+        let reservas: any[] = [];
+        let comentarios: any[] = [];
 
         // Simulación de nombre de usuario al iniciar sesión
         usuarioNombre.textContent = "Paula"; // Cambia esto por el nombre del usuario
@@ -100,7 +100,7 @@ import Footer from '../Layouts/Footer.astro';
             verificarDisponibilidad(fecha);
         });
 
-        function verificarDisponibilidad(fecha) {
+        function verificarDisponibilidad(fecha: any) {
             const horas = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
             const salas = ['Sala 1', 'Sala 2', 'Sala 3', 'Laboratorio 5', 'CITT'];
 
@@ -136,14 +136,14 @@ import Footer from '../Layouts/Footer.astro';
             });
         }
 
-        function confirmarReserva(sala, fecha, hora) {
+        function confirmarReserva(sala: string, fecha: any, hora: string) {
             const confirmar = confirm(`¿Estás seguro de que deseas reservar ${sala} el ${fecha} a las ${hora}?`);
             if (confirmar) {
                 reservar(sala, fecha, hora);
             }
         }
 
-        function reservar(sala, fecha, hora) {
+        function reservar(sala: any, fecha: any, hora: any) {
             // Comprobar si la reserva ya existe
             const existeReserva = reservas.some(reserva => reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora);
 
@@ -178,7 +178,7 @@ import Footer from '../Layouts/Footer.astro';
             });
         }
 
-        function eliminarReserva(sala, fecha, hora) {
+        function eliminarReserva(sala: any, fecha: any, hora: any) {
             const confirmar = confirm(`¿Estás seguro de que deseas cancelar la reserva para ${sala} el ${fecha} a las ${hora}?`);
             if (confirmar) {
                 reservas = reservas.filter(reserva => !(reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora));
@@ -227,3 +227,4 @@ import Footer from '../Layouts/Footer.astro';
     
 </body>
 </html>
+<Footer />
