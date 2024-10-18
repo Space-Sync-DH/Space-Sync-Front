@@ -1,13 +1,15 @@
 
 ---
 import '../styles/global.css';
+import Footer from '../Layouts/Footer.astro';
 ---
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservas Space Sync</title>
+    <title>Reserva - Space Sync</title>
+    <link rel="icon" href="/logo.png" type="image/x-icon" />
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
@@ -27,8 +29,13 @@ import '../styles/global.css';
 <body class="bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 text-black font-sans">
 
     <div class="container mx-auto mt-6">
-        <h2 id="reservar" class="text-3xl font-bold mb-4">Bienvenido/a, <span id="usuarioNombre">Usuario</span></h2>
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 id="reservar" class="text-3xl font-bold">Bienvenido/a, <span id="usuarioNombre">Usuario</span></h2>
+            <!-- Botón de Cerrar Sesión -->
+            <button id="cerrarSesion" class="bg-red-500 text-white font-bold py-2 px-4 rounded" onclick="cerrarSesion()">Cerrar Sesión</button>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6">
             <h2 class="text-xl font-semibold mb-2">Selecciona Fecha</h2>
             <form id="reservaForm" class="mb-4">
                 <div class="grid grid-cols-2 gap-4 mb-4">
@@ -74,20 +81,15 @@ import '../styles/global.css';
     </div>
 
     <script>
-        const reservaForm = document.getElementById('reservaForm');
         const usuarioNombre = document.getElementById('usuarioNombre');
+        const reservaForm = document.getElementById('reservaForm');
+        const comentarioForm = document.getElementById('comentarioForm');
+        
         let reservas = [];
         let comentarios = [];
 
         // Simulación de nombre de usuario al iniciar sesión
         usuarioNombre.textContent = "Paula"; // Cambia esto por el nombre del usuario
-
-        // Evitar la recarga de página al presionar F5
-        window.addEventListener("keydown", function(event) {
-            if (event.key === "F5") {
-                event.preventDefault();
-            }
-        });
 
         reservaForm.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -98,42 +100,41 @@ import '../styles/global.css';
             verificarDisponibilidad(fecha);
         });
 
-        function verificarDisponibilidad(fecha: any) {
-    const horas = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
-    const salas = ['Sala 1', 'Sala 2', 'Sala 3', 'Laboratorio 5', 'CITT'];
+        function verificarDisponibilidad(fecha) {
+            const horas = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+            const salas = ['Sala 1', 'Sala 2', 'Sala 3', 'Laboratorio 5', 'CITT'];
 
-    // Limpiar el contenedor de salas
-    document.getElementById('salasDisponibles').innerHTML = '';
+            // Limpiar el contenedor de salas
+            document.getElementById('salasDisponibles').innerHTML = '';
 
-    salas.forEach(sala => {
-        const salaDiv = document.createElement('div');
-        salaDiv.classList.add('border', 'border-gray-300', 'p-4', 'rounded', 'mb-4');
-        const tituloSala = document.createElement('h3');
-        tituloSala.classList.add('text-lg', 'font-bold');
-        tituloSala.textContent = sala;
-        salaDiv.appendChild(tituloSala);
+            salas.forEach(sala => {
+                const salaDiv = document.createElement('div');
+                salaDiv.classList.add('border', 'border-gray-300', 'p-4', 'rounded', 'mb-4');
+                const tituloSala = document.createElement('h3');
+                tituloSala.classList.add('text-lg', 'font-bold');
+                tituloSala.textContent = sala;
+                salaDiv.appendChild(tituloSala);
 
-        horas.forEach(hora => {
-            const horaDiv = document.createElement('div');
-            horaDiv.classList.add('inline-block', 'border', 'rounded', 'py-2', 'px-4', 'mr-2', 'mb-2', 'cursor-pointer');
-            horaDiv.textContent = hora;
+                horas.forEach(hora => {
+                    const horaDiv = document.createElement('div');
+                    horaDiv.classList.add('inline-block', 'border', 'rounded', 'py-2', 'px-4', 'mr-2', 'mb-2', 'cursor-pointer');
+                    horaDiv.textContent = hora;
 
-            // Comprobar si la hora está ocupada
-            if (reservas.some(reserva => reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora)) {
-                horaDiv.classList.add('hora-ocupada');
-                horaDiv.textContent += ' - Ocupada';
-            } else {
-                horaDiv.classList.add('hora-disponible');
-                horaDiv.onclick = function() { confirmarReserva(sala, fecha, hora); };
-            }
+                    // Comprobar si la hora está ocupada
+                    if (reservas.some(reserva => reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora)) {
+                        horaDiv.classList.add('hora-ocupada');
+                        horaDiv.textContent += ' - Ocupada';
+                    } else {
+                        horaDiv.classList.add('hora-disponible');
+                        horaDiv.onclick = function() { confirmarReserva(sala, fecha, hora); };
+                    }
 
-            salaDiv.appendChild(horaDiv);
-        });
+                    salaDiv.appendChild(horaDiv);
+                });
 
-        document.getElementById('salasDisponibles').appendChild(salaDiv);
-    });
-}
-
+                document.getElementById('salasDisponibles').appendChild(salaDiv);
+            });
+        }
 
         function confirmarReserva(sala, fecha, hora) {
             const confirmar = confirm(`¿Estás seguro de que deseas reservar ${sala} el ${fecha} a las ${hora}?`);
@@ -142,23 +143,22 @@ import '../styles/global.css';
             }
         }
 
-        function reservar(sala: any, fecha: any, hora: any) {
-    // Comprobar si la reserva ya existe
-    const existeReserva = reservas.some(reserva => reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora);
+        function reservar(sala, fecha, hora) {
+            // Comprobar si la reserva ya existe
+            const existeReserva = reservas.some(reserva => reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora);
 
-    if (!existeReserva) {
-        // Agregar la reserva
-        reservas.push({ sala, fecha, hora });
+            if (!existeReserva) {
+                // Agregar la reserva
+                reservas.push({ sala, fecha, hora });
+                // Actualizar el historial de reservas
+                actualizarHistorialReservas();
 
-        // Actualizar el historial de reservas
-        actualizarHistorialReservas();
-
-        alert(`Reserva realizada con éxito para ${sala} el ${fecha} a las ${hora}.`);
-        verificarDisponibilidad(fecha); // Actualizar la disponibilidad
-    } else {
-        alert(`Ya existe una reserva para ${sala} el ${fecha} a las ${hora}.`);
-    }
-}
+                alert(`Reserva realizada con éxito para ${sala} el ${fecha} a las ${hora}.`);
+                verificarDisponibilidad(fecha); // Actualizar la disponibilidad
+            } else {
+                alert(`Ya existe una reserva para ${sala} el ${fecha} a las ${hora}.`);
+            }
+        }
 
         function actualizarHistorialReservas() {
             const historialTable = document.getElementById('historialReservas').getElementsByTagName('tbody')[0];
@@ -181,31 +181,49 @@ import '../styles/global.css';
         function eliminarReserva(sala, fecha, hora) {
             const confirmar = confirm(`¿Estás seguro de que deseas cancelar la reserva para ${sala} el ${fecha} a las ${hora}?`);
             if (confirmar) {
-                // Filtrar las reservas para eliminar la seleccionada
                 reservas = reservas.filter(reserva => !(reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora));
                 actualizarHistorialReservas();
-                alert(`Reserva para ${sala} el ${fecha} a las ${hora} ha sido cancelada.`);
-                verificarDisponibilidad(fecha); // Actualizar la disponibilidad de salas
+                verificarDisponibilidad(fecha); // Actualizar la disponibilidad
+                alert(`Reserva cancelada para ${sala} el ${fecha} a las ${hora}.`);
             }
         }
 
         // Manejo de comentarios
-        const comentarioForm = document.getElementById('comentarioForm');
         comentarioForm.addEventListener('submit', function(event) {
             event.preventDefault();
             const comentarioTexto = document.getElementById('comentario').value;
 
-            if (comentarioTexto) {
+            if (comentarioTexto.trim() !== '') {
                 comentarios.push(comentarioTexto);
-                document.getElementById('comentario').value = ''; // Limpiar el campo de comentario
-                actualizarComentarios();
+                actualizarComentariosRecientes();
+                document.getElementById('comentario').value = ''; // Limpiar el campo
+            } else {
+                alert('Por favor, escribe un comentario.');
             }
         });
 
-        function actualizarComentarios() {
-            const comentariosRecientesDiv = document.getElementById('comentariosRecientes');
-            comentariosRecientesDiv.innerHTML = comentarios.map(comentario => `<p>${comentario}</p>`).join('');
+        function actualizarComentariosRecientes() {
+            const comentariosDiv = document.getElementById('comentariosRecientes');
+            comentariosDiv.innerHTML = '';
+
+            comentarios.forEach(comentario => {
+                const comentarioDiv = document.createElement('div');
+                comentarioDiv.textContent = comentario;
+                comentarioDiv.classList.add('border', 'border-gray-300', 'p-2', 'mb-2', 'rounded');
+                comentariosDiv.appendChild(comentarioDiv);
+            });
+        }
+
+        // Función para cerrar sesión
+        function cerrarSesion() {
+            // Limpiar reservas y comentarios
+            reservas = [];
+            comentarios = [];
+            alert("Has cerrado sesión. Volviendo a la página de inicio.");
+            // Redirigir al inicio (cambiar la URL según sea necesario)
+            window.location.href = '/'; // Cambia esto a la ruta de tu página de inicio
         }
     </script>
+    
 </body>
 </html>
