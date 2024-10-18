@@ -1,0 +1,203 @@
+
+---
+import '../styles/global.css';
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservas Space Sync</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Bebas Neue', sans-serif; /* Fuente por defecto para el cuerpo */
+        }
+        .hora-disponible {
+            background-color: #38a169; /* Verde */
+        }
+        .hora-ocupada {
+            background-color: #e53e3e; /* Rojo */
+        }
+        #fecha {
+            width: 150px; /* Ancho del campo de fecha más corto */
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 text-black font-sans">
+
+    <div class="container mx-auto mt-6">
+        <h2 id="reservar" class="text-3xl font-bold mb-4">Bienvenido/a, <span id="usuarioNombre">Usuario</span></h2>
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-2">Selecciona Fecha</h2>
+            <form id="reservaForm" class="mb-4">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="fecha" class="block mb-1">Fecha:</label>
+                        <input type="date" id="fecha" required class="border border-gray-300 rounded p-2">
+                    </div>
+                </div>
+                <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">Ver Disponibilidad</button>
+            </form>
+
+            <h2 class="text-xl font-semibold mb-2">Salas Disponibles</h2>
+            <div id="salasDisponibles" class="grid grid-cols-1 gap-4">
+                <!-- Aquí se mostrarán las salas y sus horarios -->
+            </div>
+
+            <h2 class="text-xl font-semibold mb-2">Historial de Reservas</h2>
+            <table class="min-w-full bg-white border border-gray-300 mb-4" id="historialReservas">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="border border-gray-300 px-4 py-2">Sala</th>
+                        <th class="border border-gray-300 px-4 py-2">Fecha</th>
+                        <th class="border border-gray-300 px-4 py-2">Hora</th>
+                        <th class="border border-gray-300 px-4 py-2">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se añadirán las reservas -->
+                </tbody>
+            </table>
+
+            <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
+            <form id="comentarioForm" class="mb-4">
+                <textarea id="comentario" class="border border-gray-300 rounded w-full p-2 mb-2" placeholder="Deja tu comentario aquí..."></textarea>
+                <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">Enviar Comentario</button>
+            </form>
+
+            <h3 class="text-lg font-semibold mb-2">Comentarios Recientes:</h3>
+            <div id="comentariosRecientes" class="bg-white rounded-lg shadow-lg p-4">
+                <!-- Comentarios visibles para el admin -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const reservaForm = document.getElementById('reservaForm');
+        const usuarioNombre = document.getElementById('usuarioNombre');
+        let reservas = [];
+        let comentarios = [];
+
+        // Simulación de nombre de usuario al iniciar sesión
+        usuarioNombre.textContent = "Paula"; // Cambia esto por el nombre del usuario
+
+        // Evitar la recarga de página al presionar F5
+        window.addEventListener("keydown", function(event) {
+            if (event.key === "F5") {
+                event.preventDefault();
+            }
+        });
+
+        reservaForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const fecha = document.getElementById('fecha').value;
+
+            // Limpiar la vista de salas
+            document.getElementById('salasDisponibles').innerHTML = '';
+            verificarDisponibilidad(fecha);
+        });
+
+        function verificarDisponibilidad(fecha) {
+            // Simulación de datos de horarios ocupados
+            const horas = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+            const salas = ['Sala 1', 'Sala 2', 'Sala 3', 'Laboratorio 5', 'CITT'];
+
+            salas.forEach(sala => {
+                const salaDiv = document.createElement('div');
+                salaDiv.classList.add('border', 'border-gray-300', 'p-4', 'rounded', 'mb-4');
+                const tituloSala = document.createElement('h3');
+                tituloSala.classList.add('text-lg', 'font-bold');
+                tituloSala.textContent = sala;
+                salaDiv.appendChild(tituloSala);
+
+                horas.forEach(hora => {
+                    const horaDiv = document.createElement('div');
+                    horaDiv.classList.add('inline-block', 'border', 'rounded', 'py-2', 'px-4', 'mr-2', 'mb-2', 'cursor-pointer');
+                    horaDiv.textContent = hora;
+
+                    // Comprobar si la hora está ocupada
+                    if (reservas.some(reserva => reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora)) {
+                        horaDiv.classList.add('hora-ocupada');
+                        horaDiv.textContent += ' - Ocupada';
+                    } else {
+                        horaDiv.classList.add('hora-disponible');
+                        horaDiv.onclick = function() { confirmarReserva(sala, fecha, hora); };
+                    }
+
+                    salaDiv.appendChild(horaDiv);
+                });
+
+                document.getElementById('salasDisponibles').appendChild(salaDiv);
+            });
+        }
+
+        function confirmarReserva(sala, fecha, hora) {
+            const confirmar = confirm(`¿Estás seguro de que deseas reservar ${sala} el ${fecha} a las ${hora}?`);
+            if (confirmar) {
+                reservar(sala, fecha, hora);
+            }
+        }
+
+        function reservar(sala, fecha, hora) {
+            // Agregar la reserva
+            reservas.push({ sala, fecha, hora });
+
+            // Actualizar el historial de reservas
+            actualizarHistorialReservas();
+
+            alert(`Reserva realizada con éxito para ${sala} el ${fecha} a las ${hora}.`);
+            verificarDisponibilidad(fecha); // Actualizar la disponibilidad
+        }
+
+        function actualizarHistorialReservas() {
+            const historialTable = document.getElementById('historialReservas').getElementsByTagName('tbody')[0];
+            historialTable.innerHTML = '';
+
+            reservas.forEach(reserva => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="border border-gray-300 px-4 py-2">${reserva.sala}</td>
+                    <td class="border border-gray-300 px-4 py-2">${reserva.fecha}</td>
+                    <td class="border border-gray-300 px-4 py-2">${reserva.hora}</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <button class="bg-red-500 text-white px-2 py-1 rounded" onclick="eliminarReserva('${reserva.sala}', '${reserva.fecha}', '${reserva.hora}')">Cancelar</button>
+                    </td>
+                `;
+                historialTable.appendChild(row);
+            });
+        }
+
+        function eliminarReserva(sala, fecha, hora) {
+            reservas = reservas.filter(reserva => !(reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora));
+            actualizarHistorialReservas();
+            alert(`Reserva para ${sala} el ${fecha} a las ${hora} ha sido cancelada.`);
+            verificarDisponibilidad(fecha); // Actualizar la disponibilidad de salas
+        }
+
+        // Manejo de comentarios
+        const comentarioForm = document.getElementById('comentarioForm');
+        comentarioForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const comentario = document.getElementById('comentario').value;
+            if (comentario) {
+                comentarios.push(comentario);
+                actualizarComentarios();
+                document.getElementById('comentario').value = ''; // Limpiar el campo de comentario
+            }
+        });
+
+        function actualizarComentarios() {
+            const comentariosDiv = document.getElementById('comentariosRecientes');
+            comentariosDiv.innerHTML = '';
+
+            comentarios.forEach(comentario => {
+                const comentarioDiv = document.createElement('div');
+                comentarioDiv.classList.add('border', 'border-gray-300', 'p-2', 'rounded', 'mb-2');
+                comentarioDiv.textContent = comentario;
+                comentariosDiv.appendChild(comentarioDiv);
+            });
+        }
+    </script>
+</body>
+</html>
