@@ -1,0 +1,156 @@
+---
+import '../styles/global.css';
+import Footer from '../Layouts/Footer.astro';
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Space Sync</title>
+    <link rel="icon" href="/logo.png" type="image/x-icon" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    
+</head>
+<body class="bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 text-black font-sans">
+
+    <div class="container mx-auto mt-6">
+        <h2 class="text-3xl font-bold mb-4">Dashboard de Administrador</h2>
+
+        <!-- Sección de edición de salas -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Editar Salas</h2>
+            <div id="salasAdmin" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Aquí se mostrarán las salas para editar -->
+            </div>
+        </div>
+
+        <!-- Sección de comentarios -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Comentarios Recientes</h2>
+            <div id="comentariosAdmin" class="bg-white rounded-lg shadow-lg p-4">
+                <!-- Comentarios visibles para el admin -->
+            </div>
+        </div>
+
+        <!-- Sección de historial de reservas -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Historial de Reservas</h2>
+            <table class="min-w-full bg-white border border-gray-300 mb-4" id="historialReservasAdmin">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="border border-gray-300 px-4 py-2">Usuario</th>
+                        <th class="border border-gray-300 px-4 py-2">Fecha</th>
+                        <th class="border border-gray-300 px-4 py-2">Sala</th>
+                        <th class="border border-gray-300 px-4 py-2">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se añadirán las reservas -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        type Reserva = { usuario: string; sala: string; fecha: string; hora: string };
+        type Comentario = { texto: string; respondido: boolean; id: number };
+
+        let reservas: Reserva[] = [];
+        let comentarios: Comentario[] = [];
+        let salas: { [key: string]: { cantidad: number; bloqueada: boolean } } = {
+            'Sala 1': { cantidad: 30, bloqueada: false },
+            'Sala 2': { cantidad: 25, bloqueada: false },
+            'Sala 3': { cantidad: 20, bloqueada: false },
+            'Laboratorio 5': { cantidad: 15, bloqueada: false },
+            'CITT': { cantidad: 40, bloqueada: false }
+        };
+
+        function cargarSalas(): void {
+            const salasAdminDiv = document.getElementById('salasAdmin')!;
+            salasAdminDiv.innerHTML = ''; // Limpiar el contenido existente
+
+            for (const sala in salas) {
+                const salaDiv = document.createElement('div');
+                salaDiv.classList.add('border', 'border-gray-300', 'p-4', 'rounded', 'bg-white', 'shadow-lg');
+                salaDiv.innerHTML = `
+                    <h3 class="text-lg font-bold">${sala}</h3>
+                    <div>Cantidad de elementos: <input type="number" value="${salas[sala].cantidad}" min="0" onchange="actualizarCantidad('${sala}', this.value)" class="border border-gray-300 rounded p-1 w-24" /></div>
+                    <div>
+                        <input type="checkbox" ${salas[sala].bloqueada ? 'checked' : ''} onchange="bloquearSala('${sala}', this.checked)" />
+                        <label> Bloquear sala</label>
+                    </div>
+                `;
+                salasAdminDiv.appendChild(salaDiv);
+            }
+        }
+
+        function actualizarCantidad(sala: string, cantidad: string): void {
+            salas[sala].cantidad = Number(cantidad);
+            alert(`Cantidad de ${sala} actualizada a ${cantidad}`);
+        }
+
+        function bloquearSala(sala: string, bloqueada: boolean): void {
+            salas[sala].bloqueada = bloqueada;
+            alert(`${bloqueada ? 'Bloqueada' : 'Desbloqueada'} ${sala}`);
+        }
+
+        function cargarComentarios(): void {
+            const comentariosAdminDiv = document.getElementById('comentariosAdmin')!;
+            comentariosAdminDiv.innerHTML = ''; // Limpiar el contenido existente
+
+            comentarios.forEach((comentario, index) => {
+                const comentarioDiv = document.createElement('div');
+                comentarioDiv.classList.add('border', 'border-gray-300', 'rounded', 'p-2', 'mb-2', 'bg-gray-100');
+                comentarioDiv.innerHTML = `
+                    ${comentario.texto} <button onclick="responderComentario(${index})" class="bg-blue-500 text-white rounded px-2">Responder</button>
+                `;
+                comentariosAdminDiv.appendChild(comentarioDiv);
+            });
+        }
+
+        function responderComentario(index: number): void {
+            const respuesta = prompt("Escribe tu respuesta:");
+            if (respuesta) {
+                comentarios[index].respondido = true;
+                alert(`Respuesta enviada: ${respuesta}`);
+                cargarComentarios();
+            }
+        }
+
+        function cargarHistorialReservas(): void {
+            const tbody = document.getElementById('historialReservasAdmin')!.getElementsByTagName('tbody')[0];
+            tbody.innerHTML = ''; // Limpiar el contenido existente
+
+            reservas.forEach(reserva => {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = reserva.usuario;
+                row.insertCell(1).textContent = reserva.fecha;
+                row.insertCell(2).textContent = reserva.sala;
+                const accionCell = row.insertCell(3);
+                const btnEliminar = document.createElement('button');
+                btnEliminar.textContent = 'Eliminar';
+                btnEliminar.classList.add('bg-red-500', 'text-white', 'font-bold', 'py-1', 'px-2', 'rounded');
+                btnEliminar.onclick = () => {
+                    const index = reservas.indexOf(reserva);
+                    if (index > -1) {
+                        reservas.splice(index, 1);
+                        cargarHistorialReservas();
+                        alert('Reserva eliminada');
+                    }
+                };
+                accionCell.appendChild(btnEliminar);
+            });
+        }
+
+        // Inicializar el dashboard
+        cargarSalas();
+        cargarComentarios();
+        cargarHistorialReservas();
+    </script>
+    
+    <Footer />
+</body>
+</html>

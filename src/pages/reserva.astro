@@ -1,8 +1,8 @@
-
 ---
 import '../styles/global.css';
 import Footer from '../Layouts/Footer.astro';
 ---
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,27 +11,13 @@ import Footer from '../Layouts/Footer.astro';
     <title>Reserva - Space Sync</title>
     <link rel="icon" href="/logo.png" type="image/x-icon" />
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Bebas Neue', sans-serif;
-        }
-        .hora-disponible {
-            background-color: #38a169; /* Verde */
-        }
-        .hora-ocupada {
-            background-color: #e53e3e; /* Rojo */
-        }
-        #fecha {
-            width: 150px; /* Ancho del campo de fecha más corto */
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body class="bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 text-black font-sans">
 
     <div class="container mx-auto mt-6">
         <div class="flex justify-between items-center mb-4">
-            <h2 id="reservar" class="text-3xl font-bold">Bienvenido/a, <span id="usuarioNombre">Usuario</span></h2>
-            <!-- Botón de Cerrar Sesión -->
+            <h2 class="text-3xl font-bold">Bienvenido/a</h2>
             <button id="cerrarSesion" class="bg-red-500 text-white font-bold py-2 px-4 rounded" onclick="cerrarSesion()">Cerrar Sesión</button>
         </div>
 
@@ -48,7 +34,7 @@ import Footer from '../Layouts/Footer.astro';
             </form>
 
             <h2 class="text-xl font-semibold mb-2">Salas Disponibles</h2>
-            <div id="salasDisponibles" class="grid grid-cols-1 gap-4">
+            <div id="salasDisponibles" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <!-- Aquí se mostrarán las salas y sus horarios -->
             </div>
 
@@ -74,59 +60,80 @@ import Footer from '../Layouts/Footer.astro';
             </form>
 
             <h3 class="text-lg font-semibold mb-2">Comentarios Recientes:</h3>
-            <div id="comentariosRecientes" class="bg-white rounded-lg shadow-lg p-4">
+            <div id="comentariosRecientes" class="bg-white rounded-lg shadow-lg p-4 mb-4">
                 <!-- Comentarios visibles para el admin -->
+            </div>
+
+            <!-- Nueva sección para que el admin responda -->
+            <h3 class="text-lg font-semibold mb-2">Respuestas del Administrador:</h3>
+            <div id="respuestasAdmin" class="bg-white rounded-lg shadow-lg p-4">
+                <!-- Aquí se mostrarán las respuestas del administrador -->
             </div>
         </div>
     </div>
 
     <script>
-        const usuarioNombre = document.getElementById('usuarioNombre');
         const reservaForm = document.getElementById('reservaForm');
         const comentarioForm = document.getElementById('comentarioForm');
         
-        let reservas: any[] = [];
-        let comentarios: any[] = [];
+        let reservas = [];
+        let comentarios = [];
 
-        // Simulación de nombre de usuario al iniciar sesión
-        usuarioNombre.textContent = "Paula"; // Cambia esto por el nombre del usuario
+        // Detalles de las salas
+        const detallesSalas = {
+            'Sala 1': { tvs: 2, sillas: 30, mesas: 5, computadores: 10, pizarra: 1, plumones: 5, borrador: 1 },
+            'Sala 2': { tvs: 1, sillas: 25, mesas: 4, computadores: 8, pizarra: 1, plumones: 4, borrador: 1 },
+            'Sala 3': { tvs: 0, sillas: 20, mesas: 3, computadores: 5, pizarra: 1, plumones: 3, borrador: 1 },
+            'Laboratorio 5': { tvs: 1, sillas: 15, mesas: 2, computadores: 10, pizarra: 1, plumones: 2, borrador: 1 },
+            'CITT': { tvs: 3, sillas: 40, mesas: 6, computadores: 15, pizarra: 1, plumones: 5, borrador: 1 }
+        };
 
-        reservaForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const fecha = document.getElementById('fecha').value;
-
-            // Limpiar la vista de salas
-            document.getElementById('salasDisponibles').innerHTML = '';
-            verificarDisponibilidad(fecha);
-        });
-
-        function verificarDisponibilidad(fecha: any) {
+        function verificarDisponibilidad(fecha) {
             const horas = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
-            const salas = ['Sala 1', 'Sala 2', 'Sala 3', 'Laboratorio 5', 'CITT'];
+            const salas = Object.keys(detallesSalas);
 
-            // Limpiar el contenedor de salas
             document.getElementById('salasDisponibles').innerHTML = '';
 
             salas.forEach(sala => {
                 const salaDiv = document.createElement('div');
-                salaDiv.classList.add('border', 'border-gray-300', 'p-4', 'rounded', 'mb-4');
+                salaDiv.classList.add('border', 'border-gray-300', 'p-4', 'rounded', 'mb-4', 'bg-white', 'shadow-lg');
                 const tituloSala = document.createElement('h3');
                 tituloSala.classList.add('text-lg', 'font-bold');
                 tituloSala.textContent = sala;
                 salaDiv.appendChild(tituloSala);
+
+                // Detalles de la sala
+                const detallesDiv = document.createElement('div');
+                detallesDiv.classList.add('mb-4');
+                detallesDiv.innerHTML = `
+                    <h4 class="font-bold mb-2">Detalle</h4>
+                    <div><i class="fas fa-tv"></i> ${detallesSalas[sala].tvs} TVs</div>
+                    <div><i class="fas fa-chair"></i> ${detallesSalas[sala].sillas} Sillas</div>
+                    <div><i class="fas fa-table"></i> ${detallesSalas[sala].mesas} Mesas</div>
+                    <div><i class="fas fa-desktop"></i> ${detallesSalas[sala].computadores} Computadores</div>
+                    <div><i class="fas fa-chalkboard"></i> ${detallesSalas[sala].pizarra} Pizarra</div>
+                    <div><i class="fas fa-marker"></i> ${detallesSalas[sala].plumones} Plumones</div>
+                    <div><i class="fas fa-eraser"></i> ${detallesSalas[sala].borrador} Borrador</div>
+                `;
+                salaDiv.appendChild(detallesDiv);
 
                 horas.forEach(hora => {
                     const horaDiv = document.createElement('div');
                     horaDiv.classList.add('inline-block', 'border', 'rounded', 'py-2', 'px-4', 'mr-2', 'mb-2', 'cursor-pointer');
                     horaDiv.textContent = hora;
 
-                    // Comprobar si la hora está ocupada
                     if (reservas.some(reserva => reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora)) {
                         horaDiv.classList.add('hora-ocupada');
                         horaDiv.textContent += ' - Ocupada';
                     } else {
                         horaDiv.classList.add('hora-disponible');
-                        horaDiv.onclick = function() { confirmarReserva(sala, fecha, hora); };
+                        horaDiv.onclick = () => {
+                            if (confirm(`¿Estás seguro que deseas reservar la ${sala} para el ${fecha} a las ${hora}?`)) {
+                                reservas.push({ sala, fecha, hora });
+                                actualizarHistorialReservas();
+                                verificarDisponibilidad(fecha);
+                            }
+                        };
                     }
 
                     salaDiv.appendChild(horaDiv);
@@ -136,95 +143,84 @@ import Footer from '../Layouts/Footer.astro';
             });
         }
 
-        function confirmarReserva(sala: string, fecha: any, hora: string) {
-            const confirmar = confirm(`¿Estás seguro de que deseas reservar ${sala} el ${fecha} a las ${hora}?`);
-            if (confirmar) {
-                reservar(sala, fecha, hora);
-            }
-        }
-
-        function reservar(sala: any, fecha: any, hora: any) {
-            // Comprobar si la reserva ya existe
-            const existeReserva = reservas.some(reserva => reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora);
-
-            if (!existeReserva) {
-                // Agregar la reserva
-                reservas.push({ sala, fecha, hora });
-                // Actualizar el historial de reservas
-                actualizarHistorialReservas();
-
-                alert(`Reserva realizada con éxito para ${sala} el ${fecha} a las ${hora}.`);
-                verificarDisponibilidad(fecha); // Actualizar la disponibilidad
-            } else {
-                alert(`Ya existe una reserva para ${sala} el ${fecha} a las ${hora}.`);
-            }
-        }
-
-        function actualizarHistorialReservas() {
-            const historialTable = document.getElementById('historialReservas').getElementsByTagName('tbody')[0];
-            historialTable.innerHTML = '';
-
-            reservas.forEach(reserva => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="border border-gray-300 px-4 py-2">${reserva.sala}</td>
-                    <td class="border border-gray-300 px-4 py-2">${reserva.fecha}</td>
-                    <td class="border border-gray-300 px-4 py-2">${reserva.hora}</td>
-                    <td class="border border-gray-300 px-4 py-2">
-                        <button class="bg-red-500 text-white px-2 py-1 rounded" onclick="eliminarReserva('${reserva.sala}', '${reserva.fecha}', '${reserva.hora}')">Cancelar</button>
-                    </td>
-                `;
-                historialTable.appendChild(row);
-            });
-        }
-
-        function eliminarReserva(sala: any, fecha: any, hora: any) {
-            const confirmar = confirm(`¿Estás seguro de que deseas cancelar la reserva para ${sala} el ${fecha} a las ${hora}?`);
-            if (confirmar) {
-                reservas = reservas.filter(reserva => !(reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora));
-                actualizarHistorialReservas();
-                verificarDisponibilidad(fecha); // Actualizar la disponibilidad
-                alert(`Reserva cancelada para ${sala} el ${fecha} a las ${hora}.`);
-            }
-        }
-
-        // Manejo de comentarios
-        comentarioForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const comentarioTexto = document.getElementById('comentario').value;
-
-            if (comentarioTexto.trim() !== '') {
-                comentarios.push(comentarioTexto);
-                actualizarComentariosRecientes();
-                document.getElementById('comentario').value = ''; // Limpiar el campo
-            } else {
-                alert('Por favor, escribe un comentario.');
+        reservaForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fecha = document.getElementById('fecha').value;
+            if (fecha) {
+                verificarDisponibilidad(fecha);
             }
         });
 
-        function actualizarComentariosRecientes() {
-            const comentariosDiv = document.getElementById('comentariosRecientes');
-            comentariosDiv.innerHTML = '';
+        function actualizarHistorialReservas() {
+            const historialReservas = document.getElementById('historialReservas').getElementsByTagName('tbody')[0];
+            historialReservas.innerHTML = '';
 
-            comentarios.forEach(comentario => {
-                const comentarioDiv = document.createElement('div');
-                comentarioDiv.textContent = comentario;
-                comentarioDiv.classList.add('border', 'border-gray-300', 'p-2', 'mb-2', 'rounded');
-                comentariosDiv.appendChild(comentarioDiv);
+            reservas.forEach((reserva, index) => {
+                const row = historialReservas.insertRow();
+                row.insertCell(0).textContent = reserva.sala;
+                row.insertCell(1).textContent = reserva.fecha;
+                row.insertCell(2).textContent = reserva.hora;
+                const accionCell = row.insertCell(3);
+                const eliminarBtn = document.createElement('button');
+                eliminarBtn.textContent = 'Eliminar';
+                eliminarBtn.classList.add('bg-red-500', 'text-white', 'font-bold', 'py-2', 'px-4', 'rounded');
+                eliminarBtn.onclick = () => {
+                    if (confirm('¿Estás seguro que deseas eliminar esta reserva?')) {
+                        reservas.splice(index, 1);
+                        actualizarHistorialReservas();
+                    }
+                };
+                accionCell.appendChild(eliminarBtn);
             });
         }
 
-        // Función para cerrar sesión
+        comentarioForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const comentario = document.getElementById('comentario').value;
+            if (comentario) {
+                comentarios.push({ texto: comentario, respuesta: null });
+                actualizarComentarios();
+            }
+        });
+
+        function actualizarComentarios() {
+            const comentariosRecientes = document.getElementById('comentariosRecientes');
+            comentariosRecientes.innerHTML = '';
+            const respuestasAdmin = document.getElementById('respuestasAdmin');
+            respuestasAdmin.innerHTML = '';
+
+            comentarios.forEach((comentario, index) => {
+                const comentarioDiv = document.createElement('div');
+                comentarioDiv.classList.add('mb-4');
+                comentarioDiv.innerHTML = `<strong>Comentario:</strong> ${comentario.texto}`;
+                comentariosRecientes.appendChild(comentarioDiv);
+
+                // Espacio para respuesta del administrador
+                const respuestaInput = document.createElement('textarea');
+                respuestaInput.classList.add('border', 'border-gray-300', 'rounded', 'w-full', 'p-2', 'mb-2');
+                respuestaInput.placeholder = 'Responder como administrador...';
+                respuestaInput.value = comentario.respuesta || '';
+
+                const enviarRespuestaBtn = document.createElement('button');
+                enviarRespuestaBtn.textContent = 'Enviar Respuesta';
+                enviarRespuestaBtn.classList.add('bg-blue-500', 'text-white', 'font-bold', 'py-2', 'px-4', 'rounded');
+                enviarRespuestaBtn.onclick = () => {
+                    comentario.respuesta = respuestaInput.value;
+                    actualizarComentarios();
+                };
+
+                respuestasAdmin.appendChild(respuestaInput);
+                respuestasAdmin.appendChild(enviarRespuestaBtn);
+            });
+        }
+
         function cerrarSesion() {
-            // Limpiar reservas y comentarios
-            reservas = [];
-            comentarios = [];
-            alert("Has cerrado sesión. Volviendo a la página de inicio.");
-            // Redirigir al inicio (cambiar la URL según sea necesario)
-            window.location.href = '/'; // Cambia esto a la ruta de tu página de inicio
+            if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
+                window.location.href = '/';
+            }
         }
     </script>
-    
+
+    <Footer />
 </body>
 </html>
-<Footer />
