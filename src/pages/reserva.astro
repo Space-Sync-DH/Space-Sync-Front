@@ -1,91 +1,67 @@
 ---
+// src/pages/index.astro
+import Navbar from '../components/Navbar_User.astro';
+import Sidebar from '../components/Slidebar_User.astro';
 import '../styles/global.css';
-import Footer from '../Layouts/Footer.astro';
 ---
 
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reserva - Space Sync</title>
+    <title>Reserva de Espacios</title>
     <link rel="icon" href="/logo.png" type="image/x-icon" />
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.4.0/flowbite.min.css" rel="stylesheet">
 </head>
 <body class="bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 text-black font-sans">
-    <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        <nav class="bg-white w-64 h-screen shadow-md p-4">
-            <div class="flex items-center mb-4">
-                <img src="logo.png" alt="Logo" class="h-12 w-12 mr-2">
-                <h2 class="text-lg font-semibold">Space Sync</h2>
-            </div>
-            <ul class="flex flex-col space-y-2">
-                <li><a href="#" onclick="mostrarInstrucciones()" class="block p-4 text-gray-700 hover:bg-gray-200">Instrucciones</a></li>
-                <li><a href="/historial" class="block p-4 text-gray-700 hover:bg-gray-200">Historial</a></li>
-                <li><a href="/reserva" class="block p-4 text-gray-700 hover:bg-gray-200">Reserva</a></li>
-                <li><a href="/comentarios" class="block p-4 text-gray-700 hover:bg-gray-200">Comentarios</a></li>
-            </ul>
-            <div class="mt-auto p-4">
-                <a href="#" onclick="cerrarSesion()" class="block text-gray-700 hover:bg-gray-200">Cerrar Sesión</a>
-            </div>
-        </nav>
 
-        <!-- Main content -->
-        <div class="flex-grow p-6">
-            <div class="container mx-auto mt-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-3xl font-bold">Bienvenido/a</h2>
-                    <button id="cerrarSesion" class="bg-red-500 text-white font-bold py-2 px-4 rounded" onclick="cerrarSesion()">Cerrar Sesión</button>
+    <div class="flex">
+        <!-- Sidebar -->
+        <Sidebar />
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col ml-64"> <!-- Margen para el sidebar -->
+            <!-- Navbar -->
+            <Navbar />
+
+            <div class="container mx-auto p-8 flex-1">
+                <h2 class="text-xl font-semibold mb-4">¡Haz tu Reserva!</h2>
+                <form id="reservation-form" class="space-y-4">
+                    <div>
+                        <label for="date" class="block text-gray-700">Fecha</label>
+                        <input type="date" id="date" required class="mt-1 p-2 border border-gray-300 rounded w-full">
+                    </div>
+                    <div>
+                        <label for="capacity" class="block text-gray-700">Capacidad</label>
+                        <select id="capacity" required class="mt-1 p-2 border border-gray-300 rounded w-full">
+                            <option value="" disabled selected>Selecciona la capacidad</option>
+                            <option value="2">2 personas</option>
+                            <option value="4">4 personas</option>
+                            <option value="6">6 personas</option>
+                            <option value="8">8 personas</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="bg-blue-600 text-white p-2 rounded">Buscar Espacios</button>
+                </form>
+
+                <div id="available-spaces" class="bg-white shadow-md rounded-lg p-6 mt-6">
+                    <h2 class="text-xl font-semibold mb-4">Espacios Disponibles</h2>
+                    <div id="date-display" class="mb-4 text-lg font-semibold hidden"></div>
+                    <ul id="spaces-list" class="space-y-4">
+                        <!-- Aquí se llenarán los espacios disponibles -->
+                    </ul>
                 </div>
 
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h2 class="text-xl font-semibold mb-2">Selecciona Fecha</h2>
-                    <form id="reservaForm" class="mb-4">
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label for="fecha" class="block mb-1">Fecha:</label>
-                                <input type="date" id="fecha" required class="border border-gray-300 rounded p-2">
-                            </div>
+                <!-- Modal de confirmación -->
+                <div id="confirmation-modal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-lg font-semibold mb-4">Confirmación de Reserva</h3>
+                        <p id="modal-message" class="mb-4"></p>
+                        <div class="flex justify-end">
+                            <button id="confirm-button" class="bg-blue-600 text-white px-4 py-2 rounded mr-2">Confirmar</button>
+                            <button id="cancel-button" class="bg-red-600 text-white px-4 py-2 rounded">Cancelar</button>
                         </div>
-                        <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">Ver Disponibilidad</button>
-                    </form>
-
-                    <h2 class="text-xl font-semibold mb-2">Salas Disponibles</h2>
-                    <div id="salasDisponibles" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <!-- Aquí se mostrarán las salas y sus horarios -->
-                    </div>
-
-                    <h2 class="text-xl font-semibold mb-2">Historial de Reservas</h2>
-                    <table class="min-w-full bg-white border border-gray-300 mb-4" id="historialReservas">
-                        <thead>
-                            <tr class="bg-gray-200">
-                                <th class="border border-gray-300 px-4 py-2">Sala</th>
-                                <th class="border border-gray-300 px-4 py-2">Fecha</th>
-                                <th class="border border-gray-300 px-4 py-2">Hora</th>
-                                <th class="border border-gray-300 px-4 py-2">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Aquí se añadirán las reservas -->
-                        </tbody>
-                    </table>
-
-                    <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
-                    <form id="comentarioForm" class="mb-4">
-                        <textarea id="comentario" class="border border-gray-300 rounded w-full p-2 mb-2" placeholder="Deja tu comentario aquí..."></textarea>
-                        <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">Enviar Comentario</button>
-                    </form>
-
-                    <h3 class="text-lg font-semibold mb-2">Comentarios Recientes:</h3>
-                    <div id="comentariosRecientes" class="bg-white rounded-lg shadow-lg p-4 mb-4">
-                        <!-- Comentarios visibles para el admin -->
-                    </div>
-
-                    <h3 class="text-lg font-semibold mb-2">Respuestas del Administrador:</h3>
-                    <div id="respuestasAdmin" class="bg-white rounded-lg shadow-lg p-4">
-                        <!-- Aquí se mostrarán las respuestas del administrador -->
                     </div>
                 </div>
             </div>
@@ -93,122 +69,105 @@ import Footer from '../Layouts/Footer.astro';
     </div>
 
     <script>
-        const reservaForm = document.getElementById('reservaForm');
-        const comentarioForm = document.getElementById('comentarioForm');
-        
-        let reservas = [];
-        let comentarios = [];
+        let currentReservation = {};
 
-        const detallesSalas = {
-            'Sala 1': { tvs: 2, sillas: 30, mesas: 5, computadores: 10, pizarra: 1, plumones: 5, borrador: 1 },
-            'Sala 2': { tvs: 1, sillas: 25, mesas: 4, computadores: 8, pizarra: 1, plumones: 4, borrador: 1 },
-            'Sala 3': { tvs: 0, sillas: 20, mesas: 3, computadores: 5, pizarra: 1, plumones: 3, borrador: 1 },
-            'Laboratorio 5': { tvs: 1, sillas: 15, mesas: 2, computadores: 10, pizarra: 1, plumones: 2, borrador: 1 },
-            'CITT': { tvs: 3, sillas: 40, mesas: 6, computadores: 15, pizarra: 1, plumones: 5, borrador: 1 }
-        };
+        document.getElementById('reservation-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const date = document.getElementById('date').value;
+            const capacity = document.getElementById('capacity').value;
 
-        function verificarDisponibilidad(fecha) {
-            const horas = ["08:00 - 08:30", "08:45 - 09:15", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
-            const salas = Object.keys(detallesSalas);
+            // Mostrar la fecha seleccionada
+            const dateDisplay = document.getElementById('date-display');
+            dateDisplay.textContent = `Fecha seleccionada: ${date}`;
+            dateDisplay.classList.remove('hidden');
 
-            document.getElementById('salasDisponibles').innerHTML = '';
+            // Simulando la búsqueda de espacios disponibles
+            const availableSpaces = [
+                {
+                    name: "Sala de Reuniones A", 
+                    capacity: 4, 
+                    timeSlots: ["8:00 - 9:30", "9:40 - 10:50", "11:00 - 12:10", "12:20 - 13:30", "13:40 - 14:40"],
+                    description: "Sala ideal para reuniones corporativas.",
+                    features: "Mesa, 4 sillas, proyector, pizarra."
+                },
+                {
+                    name: "Sala de Capacitación B", 
+                    capacity: 6, 
+                    timeSlots: ["10:00 - 11:30", "12:00 - 13:30", "14:00 - 15:30"],
+                    description: "Espacio para talleres y capacitaciones.",
+                    features: "Mesa, 6 sillas con ruedas, estante con notebooks."
+                },
+                {
+                    name: "Espacio Creativo C", 
+                    capacity: 2, 
+                    timeSlots: ["9:00 - 10:30", "11:00 - 12:30"],
+                    description: "Ideal para brainstorming.",
+                    features: "Mesa pequeña, 2 sillas, pizarra."
+                }
+            ].filter(space => space.capacity <= capacity);
 
-            salas.forEach(sala => {
-                const salaDiv = document.createElement('div');
-                salaDiv.classList.add('border', 'border-gray-300', 'p-4', 'rounded', 'mb-4', 'bg-white', 'shadow-lg');
-                const tituloSala = document.createElement('h3');
-                tituloSala.classList.add('text-lg', 'font-bold');
-                tituloSala.textContent = sala;
-                salaDiv.appendChild(tituloSala);
+            const spacesList = document.getElementById('spaces-list');
+            spacesList.innerHTML = '';
 
-                const detallesDiv = document.createElement('div');
-                detallesDiv.classList.add('mb-4');
-                detallesDiv.innerHTML = `
-                    <h4 class="font-bold mb-2">Detalle</h4>
-                    <div><i class="fas fa-tv"></i> ${detallesSalas[sala].tvs} TVs</div>
-                    <div><i class="fas fa-chair"></i> ${detallesSalas[sala].sillas} Sillas</div>
-                    <div><i class="fas fa-table"></i> ${detallesSalas[sala].mesas} Mesas</div>
-                    <div><i class="fas fa-desktop"></i> ${detallesSalas[sala].computadores} Computadores</div>
-                    <div><i class="fas fa-chalkboard"></i> ${detallesSalas[sala].pizarra} Pizarra</div>
-                    <div><i class="fas fa-marker"></i> ${detallesSalas[sala].plumones} Plumones</div>
-                    <div><i class="fas fa-eraser"></i> ${detallesSalas[sala].borrador} Borrador</div>
-                `;
-                salaDiv.appendChild(detallesDiv);
-
-                horas.forEach(hora => {
-                    const horaDiv = document.createElement('div');
-                    horaDiv.classList.add('flex', 'justify-between', 'items-center', 'py-1', 'border-b', 'border-gray-300');
-                    horaDiv.innerHTML = `
-                        <span>${hora}</span>
-                        <button class="bg-green-500 text-white py-1 px-2 rounded" onclick="reservar('${sala}', '${hora}', '${fecha}')">Reservar</button>
+            if (availableSpaces.length > 0) {
+                availableSpaces.forEach(space => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'p-4 border border-gray-300 rounded';
+                    listItem.innerHTML = `
+                        <strong>${space.name}</strong> - Capacidad: ${space.capacity} personas<br>
+                        Descripción: ${space.description}<br>
+                        Características: ${space.features}<br>
+                        <div class="mt-2">
+                            ${space.timeSlots.map(slot => `
+                                <button class="bg-green-600 text-white p-2 rounded mt-1 mr-2" onclick="openConfirmationModal('${space.name}', '${slot}')">${slot}</button>
+                            `).join('')}
+                        </div>
                     `;
-                    salaDiv.appendChild(horaDiv);
+                    spacesList.appendChild(listItem);
                 });
-
-                document.getElementById('salasDisponibles').appendChild(salaDiv);
-            });
-        }
-
-        function reservar(sala, hora, fecha) {
-            reservas.push({ sala, hora, fecha });
-            alert(`Reservado: ${sala} - ${hora} el ${fecha}`);
-            actualizarHistorialReservas();
-        }
-
-        function actualizarHistorialReservas() {
-            const tbody = document.getElementById('historialReservas').querySelector('tbody');
-            tbody.innerHTML = '';
-            reservas.forEach((reserva, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="border border-gray-300 px-4 py-2">${reserva.sala}</td>
-                    <td class="border border-gray-300 px-4 py-2">${reserva.fecha}</td>
-                    <td class="border border-gray-300 px-4 py-2">${reserva.hora}</td>
-                    <td class="border border-gray-300 px-4 py-2"><button class="text-red-500 hover:underline" onclick="eliminarReserva(${index})">Eliminar</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function eliminarReserva(index) {
-            reservas.splice(index, 1);
-            actualizarHistorialReservas();
-        }
-
-        reservaForm.addEventListener('submit', function (event) {
-            event.preventDefault();
-            const fecha = document.getElementById('fecha').value;
-            verificarDisponibilidad(fecha);
+            } else {
+                spacesList.innerHTML = '<li class="p-4 text-gray-500">No hay espacios disponibles.</li>';
+            }
         });
 
-        comentarioForm.addEventListener('submit', function (event) {
-            event.preventDefault();
-            const comentario = document.getElementById('comentario').value;
-            comentarios.push(comentario);
-            document.getElementById('comentario').value = '';
-            mostrarComentariosRecientes();
+        function openConfirmationModal(spaceName, timeSlot) {
+            currentReservation = { spaceName, timeSlot };
+            const modalMessage = document.getElementById('modal-message');
+            modalMessage.textContent = `¿Estás seguro de que deseas reservar "${spaceName}" en la franja horaria ${timeSlot}?`;
+            document.getElementById('confirmation-modal').classList.remove('hidden');
+        }
+
+        document.getElementById('confirm-button').addEventListener('click', function() {
+            const { spaceName, timeSlot } = currentReservation;
+            alert(`Reserva confirmada para ${spaceName} en la franja horaria ${timeSlot}.`);
+            markAsReserved(spaceName, timeSlot);
+            closeModal();
         });
 
-        function mostrarComentariosRecientes() {
-            const contenedor = document.getElementById('comentariosRecientes');
-            contenedor.innerHTML = '';
-            comentarios.forEach(comentario => {
-                const comentarioDiv = document.createElement('div');
-                comentarioDiv.classList.add('p-2', 'border-b', 'border-gray-300');
-                comentarioDiv.textContent = comentario;
-                contenedor.appendChild(comentarioDiv);
+        document.getElementById('cancel-button').addEventListener('click', closeModal);
+
+        function closeModal() {
+            document.getElementById('confirmation-modal').classList.add('hidden');
+        }
+
+        function markAsReserved(spaceName, timeSlot) {
+            const spacesList = document.getElementById('spaces-list');
+            const items = spacesList.querySelectorAll('li');
+
+            items.forEach(item => {
+                if (item.innerText.includes(spaceName)) {
+                    const buttons = item.querySelectorAll('button');
+                    buttons.forEach(button => {
+                        if (button.innerText === timeSlot) {
+                            button.className = 'bg-red-600 text-white p-2 rounded mt-1 mr-2 cursor-not-allowed opacity-50';
+                            button.setAttribute('disabled', 'true'); // Deshabilitar el botón
+                        }
+                    });
+                }
             });
-        }
-
-        function cerrarSesion() {
-            alert('Cerrando sesión...');
-            // Aquí puedes agregar lógica para cerrar sesión
-        }
-
-        function mostrarInstrucciones() {
-            alert('Instrucciones sobre cómo usar el sistema.');
-            // Aquí puedes agregar la lógica para mostrar las instrucciones
         }
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.4.0/flowbite.min.js"></script>
 </body>
 </html>

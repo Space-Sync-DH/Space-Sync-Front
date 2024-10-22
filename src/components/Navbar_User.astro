@@ -1,0 +1,23 @@
+---
+import '../styles/global.css';
+---
+<header class="bg-white/30 backdrop-blur-md shadow-2xl">
+    <nav class="container mx-auto flex justify-between items-center p-5">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="flex items-center">
+          <img src="/logo.png" alt="Logo Space Sync" class="h-16" />
+          <span class="text-4xl font-bold ml-3" style="font-family: 'Bebas Neue', sans-serif;
+            background: linear-gradient(to right, #00275b, #3871c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;">
+            Space Sync
+          </span>
+        </a>
+      </div>
+      
+      <!-- Icono de menú móvil, visible solo en dispositivos móviles -->
+      <button id="menu-toggle" class="block lg:hidden focus:outline-none">
+        <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
