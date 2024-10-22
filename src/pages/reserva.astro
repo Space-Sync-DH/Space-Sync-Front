@@ -14,60 +14,80 @@ import Footer from '../Layouts/Footer.astro';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body class="bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 text-black font-sans">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <nav class="bg-white w-64 h-screen shadow-md p-4">
+            <div class="flex items-center mb-4">
+                <img src="logo.png" alt="Logo" class="h-12 w-12 mr-2">
+                <h2 class="text-lg font-semibold">Space Sync</h2>
+            </div>
+            <ul class="flex flex-col space-y-2">
+                <li><a href="#" onclick="mostrarInstrucciones()" class="block p-4 text-gray-700 hover:bg-gray-200">Instrucciones</a></li>
+                <li><a href="/historial" class="block p-4 text-gray-700 hover:bg-gray-200">Historial</a></li>
+                <li><a href="/reserva" class="block p-4 text-gray-700 hover:bg-gray-200">Reserva</a></li>
+                <li><a href="/comentarios" class="block p-4 text-gray-700 hover:bg-gray-200">Comentarios</a></li>
+            </ul>
+            <div class="mt-auto p-4">
+                <a href="#" onclick="cerrarSesion()" class="block text-gray-700 hover:bg-gray-200">Cerrar Sesión</a>
+            </div>
+        </nav>
 
-    <div class="container mx-auto mt-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-3xl font-bold">Bienvenido/a</h2>
-            <button id="cerrarSesion" class="bg-red-500 text-white font-bold py-2 px-4 rounded" onclick="cerrarSesion()">Cerrar Sesión</button>
-        </div>
+        <!-- Main content -->
+        <div class="flex-grow p-6">
+            <div class="container mx-auto mt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-3xl font-bold">Bienvenido/a</h2>
+                    <button id="cerrarSesion" class="bg-red-500 text-white font-bold py-2 px-4 rounded" onclick="cerrarSesion()">Cerrar Sesión</button>
+                </div>
 
-        <div class="bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-semibold mb-2">Selecciona Fecha</h2>
-            <form id="reservaForm" class="mb-4">
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label for="fecha" class="block mb-1">Fecha:</label>
-                        <input type="date" id="fecha" required class="border border-gray-300 rounded p-2">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-semibold mb-2">Selecciona Fecha</h2>
+                    <form id="reservaForm" class="mb-4">
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label for="fecha" class="block mb-1">Fecha:</label>
+                                <input type="date" id="fecha" required class="border border-gray-300 rounded p-2">
+                            </div>
+                        </div>
+                        <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">Ver Disponibilidad</button>
+                    </form>
+
+                    <h2 class="text-xl font-semibold mb-2">Salas Disponibles</h2>
+                    <div id="salasDisponibles" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Aquí se mostrarán las salas y sus horarios -->
+                    </div>
+
+                    <h2 class="text-xl font-semibold mb-2">Historial de Reservas</h2>
+                    <table class="min-w-full bg-white border border-gray-300 mb-4" id="historialReservas">
+                        <thead>
+                            <tr class="bg-gray-200">
+                                <th class="border border-gray-300 px-4 py-2">Sala</th>
+                                <th class="border border-gray-300 px-4 py-2">Fecha</th>
+                                <th class="border border-gray-300 px-4 py-2">Hora</th>
+                                <th class="border border-gray-300 px-4 py-2">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Aquí se añadirán las reservas -->
+                        </tbody>
+                    </table>
+
+                    <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
+                    <form id="comentarioForm" class="mb-4">
+                        <textarea id="comentario" class="border border-gray-300 rounded w-full p-2 mb-2" placeholder="Deja tu comentario aquí..."></textarea>
+                        <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">Enviar Comentario</button>
+                    </form>
+
+                    <h3 class="text-lg font-semibold mb-2">Comentarios Recientes:</h3>
+                    <div id="comentariosRecientes" class="bg-white rounded-lg shadow-lg p-4 mb-4">
+                        <!-- Comentarios visibles para el admin -->
+                    </div>
+
+                    <h3 class="text-lg font-semibold mb-2">Respuestas del Administrador:</h3>
+                    <div id="respuestasAdmin" class="bg-white rounded-lg shadow-lg p-4">
+                        <!-- Aquí se mostrarán las respuestas del administrador -->
                     </div>
                 </div>
-                <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">Ver Disponibilidad</button>
-            </form>
-
-            <h2 class="text-xl font-semibold mb-2">Salas Disponibles</h2>
-            <div id="salasDisponibles" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Aquí se mostrarán las salas y sus horarios -->
-            </div>
-
-            <h2 class="text-xl font-semibold mb-2">Historial de Reservas</h2>
-            <table class="min-w-full bg-white border border-gray-300 mb-4" id="historialReservas">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="border border-gray-300 px-4 py-2">Sala</th>
-                        <th class="border border-gray-300 px-4 py-2">Fecha</th>
-                        <th class="border border-gray-300 px-4 py-2">Hora</th>
-                        <th class="border border-gray-300 px-4 py-2">Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Aquí se añadirán las reservas -->
-                </tbody>
-            </table>
-
-            <h2 class="text-xl font-semibold mb-2">Comentarios</h2>
-            <form id="comentarioForm" class="mb-4">
-                <textarea id="comentario" class="border border-gray-300 rounded w-full p-2 mb-2" placeholder="Deja tu comentario aquí..."></textarea>
-                <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">Enviar Comentario</button>
-            </form>
-
-            <h3 class="text-lg font-semibold mb-2">Comentarios Recientes:</h3>
-            <div id="comentariosRecientes" class="bg-white rounded-lg shadow-lg p-4 mb-4">
-                <!-- Comentarios visibles para el admin -->
-            </div>
-
-            <!-- Nueva sección para que el admin responda -->
-            <h3 class="text-lg font-semibold mb-2">Respuestas del Administrador:</h3>
-            <div id="respuestasAdmin" class="bg-white rounded-lg shadow-lg p-4">
-                <!-- Aquí se mostrarán las respuestas del administrador -->
             </div>
         </div>
     </div>
@@ -79,7 +99,6 @@ import Footer from '../Layouts/Footer.astro';
         let reservas = [];
         let comentarios = [];
 
-        // Detalles de las salas
         const detallesSalas = {
             'Sala 1': { tvs: 2, sillas: 30, mesas: 5, computadores: 10, pizarra: 1, plumones: 5, borrador: 1 },
             'Sala 2': { tvs: 1, sillas: 25, mesas: 4, computadores: 8, pizarra: 1, plumones: 4, borrador: 1 },
@@ -89,7 +108,7 @@ import Footer from '../Layouts/Footer.astro';
         };
 
         function verificarDisponibilidad(fecha) {
-            const horas = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+            const horas = ["08:00 - 08:30", "08:45 - 09:15", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
             const salas = Object.keys(detallesSalas);
 
             document.getElementById('salasDisponibles').innerHTML = '';
@@ -102,7 +121,6 @@ import Footer from '../Layouts/Footer.astro';
                 tituloSala.textContent = sala;
                 salaDiv.appendChild(tituloSala);
 
-                // Detalles de la sala
                 const detallesDiv = document.createElement('div');
                 detallesDiv.classList.add('mb-4');
                 detallesDiv.innerHTML = `
@@ -119,23 +137,11 @@ import Footer from '../Layouts/Footer.astro';
 
                 horas.forEach(hora => {
                     const horaDiv = document.createElement('div');
-                    horaDiv.classList.add('inline-block', 'border', 'rounded', 'py-2', 'px-4', 'mr-2', 'mb-2', 'cursor-pointer');
-                    horaDiv.textContent = hora;
-
-                    if (reservas.some(reserva => reserva.sala === sala && reserva.fecha === fecha && reserva.hora === hora)) {
-                        horaDiv.classList.add('hora-ocupada');
-                        horaDiv.textContent += ' - Ocupada';
-                    } else {
-                        horaDiv.classList.add('hora-disponible');
-                        horaDiv.onclick = () => {
-                            if (confirm(`¿Estás seguro que deseas reservar la ${sala} para el ${fecha} a las ${hora}?`)) {
-                                reservas.push({ sala, fecha, hora });
-                                actualizarHistorialReservas();
-                                verificarDisponibilidad(fecha);
-                            }
-                        };
-                    }
-
+                    horaDiv.classList.add('flex', 'justify-between', 'items-center', 'py-1', 'border-b', 'border-gray-300');
+                    horaDiv.innerHTML = `
+                        <span>${hora}</span>
+                        <button class="bg-green-500 text-white py-1 px-2 rounded" onclick="reservar('${sala}', '${hora}', '${fecha}')">Reservar</button>
+                    `;
                     salaDiv.appendChild(horaDiv);
                 });
 
@@ -143,84 +149,66 @@ import Footer from '../Layouts/Footer.astro';
             });
         }
 
-        reservaForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const fecha = document.getElementById('fecha').value;
-            if (fecha) {
-                verificarDisponibilidad(fecha);
-            }
-        });
+        function reservar(sala, hora, fecha) {
+            reservas.push({ sala, hora, fecha });
+            alert(`Reservado: ${sala} - ${hora} el ${fecha}`);
+            actualizarHistorialReservas();
+        }
 
         function actualizarHistorialReservas() {
-            const historialReservas = document.getElementById('historialReservas').getElementsByTagName('tbody')[0];
-            historialReservas.innerHTML = '';
-
+            const tbody = document.getElementById('historialReservas').querySelector('tbody');
+            tbody.innerHTML = '';
             reservas.forEach((reserva, index) => {
-                const row = historialReservas.insertRow();
-                row.insertCell(0).textContent = reserva.sala;
-                row.insertCell(1).textContent = reserva.fecha;
-                row.insertCell(2).textContent = reserva.hora;
-                const accionCell = row.insertCell(3);
-                const eliminarBtn = document.createElement('button');
-                eliminarBtn.textContent = 'Eliminar';
-                eliminarBtn.classList.add('bg-red-500', 'text-white', 'font-bold', 'py-2', 'px-4', 'rounded');
-                eliminarBtn.onclick = () => {
-                    if (confirm('¿Estás seguro que deseas eliminar esta reserva?')) {
-                        reservas.splice(index, 1);
-                        actualizarHistorialReservas();
-                    }
-                };
-                accionCell.appendChild(eliminarBtn);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="border border-gray-300 px-4 py-2">${reserva.sala}</td>
+                    <td class="border border-gray-300 px-4 py-2">${reserva.fecha}</td>
+                    <td class="border border-gray-300 px-4 py-2">${reserva.hora}</td>
+                    <td class="border border-gray-300 px-4 py-2"><button class="text-red-500 hover:underline" onclick="eliminarReserva(${index})">Eliminar</button></td>
+                `;
+                tbody.appendChild(tr);
             });
         }
 
-        comentarioForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const comentario = document.getElementById('comentario').value;
-            if (comentario) {
-                comentarios.push({ texto: comentario, respuesta: null });
-                actualizarComentarios();
-            }
+        function eliminarReserva(index) {
+            reservas.splice(index, 1);
+            actualizarHistorialReservas();
+        }
+
+        reservaForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const fecha = document.getElementById('fecha').value;
+            verificarDisponibilidad(fecha);
         });
 
-        function actualizarComentarios() {
-            const comentariosRecientes = document.getElementById('comentariosRecientes');
-            comentariosRecientes.innerHTML = '';
-            const respuestasAdmin = document.getElementById('respuestasAdmin');
-            respuestasAdmin.innerHTML = '';
+        comentarioForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const comentario = document.getElementById('comentario').value;
+            comentarios.push(comentario);
+            document.getElementById('comentario').value = '';
+            mostrarComentariosRecientes();
+        });
 
-            comentarios.forEach((comentario, index) => {
+        function mostrarComentariosRecientes() {
+            const contenedor = document.getElementById('comentariosRecientes');
+            contenedor.innerHTML = '';
+            comentarios.forEach(comentario => {
                 const comentarioDiv = document.createElement('div');
-                comentarioDiv.classList.add('mb-4');
-                comentarioDiv.innerHTML = `<strong>Comentario:</strong> ${comentario.texto}`;
-                comentariosRecientes.appendChild(comentarioDiv);
-
-                // Espacio para respuesta del administrador
-                const respuestaInput = document.createElement('textarea');
-                respuestaInput.classList.add('border', 'border-gray-300', 'rounded', 'w-full', 'p-2', 'mb-2');
-                respuestaInput.placeholder = 'Responder como administrador...';
-                respuestaInput.value = comentario.respuesta || '';
-
-                const enviarRespuestaBtn = document.createElement('button');
-                enviarRespuestaBtn.textContent = 'Enviar Respuesta';
-                enviarRespuestaBtn.classList.add('bg-blue-500', 'text-white', 'font-bold', 'py-2', 'px-4', 'rounded');
-                enviarRespuestaBtn.onclick = () => {
-                    comentario.respuesta = respuestaInput.value;
-                    actualizarComentarios();
-                };
-
-                respuestasAdmin.appendChild(respuestaInput);
-                respuestasAdmin.appendChild(enviarRespuestaBtn);
+                comentarioDiv.classList.add('p-2', 'border-b', 'border-gray-300');
+                comentarioDiv.textContent = comentario;
+                contenedor.appendChild(comentarioDiv);
             });
         }
 
         function cerrarSesion() {
-            if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
-                window.location.href = '/';
-            }
+            alert('Cerrando sesión...');
+            // Aquí puedes agregar lógica para cerrar sesión
+        }
+
+        function mostrarInstrucciones() {
+            alert('Instrucciones sobre cómo usar el sistema.');
+            // Aquí puedes agregar la lógica para mostrar las instrucciones
         }
     </script>
-
-    <Footer />
 </body>
 </html>
