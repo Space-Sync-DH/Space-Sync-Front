@@ -16,6 +16,8 @@ import '../styles/global.css';
 </head>
 <body class="bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 text-black font-sans">
 
+  
+
     <div class="flex">
         <!-- Sidebar -->
         <Sidebar />
@@ -72,92 +74,104 @@ import '../styles/global.css';
     </div>
 
     <script>
-        let selectedButton; // Variable para almacenar la franja horaria seleccionada
+        let selectedButton: HTMLButtonElement | null = null; // Variable para almacenar la franja horaria seleccionada
 
-        document.getElementById('reservation-form').addEventListener('submit', function(event) {
+        document.getElementById('reservation-form')?.addEventListener('submit', function(event) {
             event.preventDefault();
-            const date = document.getElementById('datepicker').value;
-            const capacity = document.getElementById('capacity').value;
+            const dateInput = document.getElementById('datepicker') as HTMLInputElement | null;
+            const capacityInput = document.getElementById('capacity') as HTMLSelectElement | null;
+
+            if (!dateInput || !capacityInput) return; // Verifica que ambos elementos existan
+
+            const date = dateInput.value;
+            const capacity = capacityInput.value;
 
             // Mostrar la fecha seleccionada
-            const dateDisplay = document.getElementById('date-display');
-            dateDisplay.textContent = `Fecha seleccionada: ${date}`;
-            dateDisplay.classList.remove('hidden');
+            const dateDisplay = document.getElementById('date-display') as HTMLElement | null;
+            if (dateDisplay) {
+                dateDisplay.textContent = `Fecha seleccionada: ${date}`;
+                dateDisplay.classList.remove('hidden');
+            }
 
             // Simulando la búsqueda de espacios disponibles con detalles
             const availableSpaces = [
                 { name: "Sala de Reuniones A", capacity: 4, chairs: 4, table: true, tv: true, notebook: true, location: "Piso 1", description: "Sala ideal para reuniones corporativas." },
                 { name: "Sala de Capacitación B", capacity: 6, chairs: 6, table: true, tv: false, notebook: true, location: "Piso 2", description: "Espacio para talleres y capacitaciones." },
                 { name: "Espacio Creativo C", capacity: 2, chairs: 2, table: false, tv: false, notebook: false, location: "Piso 1", description: "Ideal para brainstorming." }
-            ].filter(space => space.capacity <= capacity);
+            ].filter(space => space.capacity <= Number(capacity)); // Convertir capacity a número
 
-            const spacesList = document.getElementById('spaces-list');
-            spacesList.innerHTML = '';
+            const spacesList = document.getElementById('spaces-list') as HTMLElement | null;
+            if (spacesList) {
+                spacesList.innerHTML = '';
 
-            if (availableSpaces.length > 0) {
-                availableSpaces.forEach(space => {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'p-4 border border-gray-300 rounded';
-                    listItem.innerHTML = `
-                        <strong>${space.name}</strong> - Capacidad: ${space.capacity} personas<br>
-                        Detalles: ${space.chairs} sillas, Mesa: ${space.table ? 'Sí' : 'No'}, TV: ${space.tv ? 'Sí' : 'No'}, Notebook: ${space.notebook ? 'Sí' : 'No'}<br>
-                        Ubicación: ${space.location} <br>
-                        Descripción: ${space.description} <br>
-                        <div class="grid grid-cols-4 gap-4 mt-2">
-                            <button class="bg-blue-500 text-white p-2 rounded reserve-button" data-space="${space.name}" data-time="8:00 - 9:30">8:00 - 9:30</button>
-                            <button class="bg-blue-500 text-white p-2 rounded reserve-button" data-space="${space.name}" data-time="9:40 - 10:50">9:40 - 10:50</button>
-                            <button class="bg-blue-500 text-white p-2 rounded reserve-button" data-space="${space.name}" data-time="11:00 - 12:10">11:00 - 12:10</button>
-                            <button class="bg-blue-500 text-white p-2 rounded reserve-button" data-space="${space.name}" data-time="12:20 - 13:30">12:20 - 13:30</button>
-                        </div>
-                    `;
-                    spacesList.appendChild(listItem);
+                if (availableSpaces.length > 0) {
+                    availableSpaces.forEach(space => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'p-4 border border-gray-300 rounded';
+                        listItem.innerHTML = `
+                            <strong>${space.name}</strong> - Capacidad: ${space.capacity} personas<br>
+                            Detalles: ${space.chairs} sillas, Mesa: ${space.table ? 'Sí' : 'No'}, TV: ${space.tv ? 'Sí' : 'No'}, Notebook: ${space.notebook ? 'Sí' : 'No'}<br>
+                            Ubicación: ${space.location} <br>
+                            Descripción: ${space.description} <br>
+                            <div class="grid grid-cols-4 gap-4 mt-2">
+                                <button class="bg-blue-500 text-white p-2 rounded reserve-button" data-space="${space.name}" data-time="8:00 - 9:30">8:00 - 9:30</button>
+                                <button class="bg-blue-500 text-white p-2 rounded reserve-button" data-space="${space.name}" data-time="9:40 - 10:50">9:40 - 10:50</button>
+                                <button class="bg-blue-500 text-white p-2 rounded reserve-button" data-space="${space.name}" data-time="11:00 - 12:10">11:00 - 12:10</button>
+                                <button class="bg-blue-500 text-white p-2 rounded reserve-button" data-space="${space.name}" data-time="12:20 - 13:30">12:20 - 13:30</button>
+                            </div>
+                        `;
+                        spacesList.appendChild(listItem);
+                    });
+                } else {
+                    spacesList.innerHTML = '<li class="p-4 text-gray-500">No hay espacios disponibles.</li>';
+                }
+
+                // Agregar evento a los botones de reserva
+                const reserveButtons = document.querySelectorAll('.reserve-button');
+                reserveButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const spaceName = this.getAttribute('data-space');
+                        const timeSlot = this.getAttribute('data-time');
+
+                        // Marcar el botón seleccionado y deshabilitar otros
+                        if (selectedButton) {
+                            selectedButton.classList.remove('bg-red-500');
+                            selectedButton.classList.add('bg-blue-500');
+                        }
+
+                        selectedButton = this as HTMLButtonElement;
+                        selectedButton.classList.add('bg-red-500');
+                        selectedButton.classList.remove('bg-blue-500');
+
+                        const confirmationMessage = document.getElementById('confirmation-message') as HTMLElement | null;
+                        if (confirmationMessage) {
+                            confirmationMessage.textContent = `¿Estás seguro de que deseas reservar ${spaceName} para el horario ${timeSlot}?`;
+                        }
+                        document.getElementById('confirmation-modal')?.classList.remove('hidden');
+                    });
                 });
-            } else {
-                spacesList.innerHTML = '<li class="p-4 text-gray-500">No hay espacios disponibles.</li>';
             }
-
-            // Agregar evento a los botones de reserva
-            const reserveButtons = document.querySelectorAll('.reserve-button');
-            reserveButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const spaceName = this.getAttribute('data-space');
-                    const timeSlot = this.getAttribute('data-time');
-
-                    // Marcar el botón seleccionado y deshabilitar otros
-                    if (selectedButton) {
-                        selectedButton.classList.remove('bg-red-500');
-                        selectedButton.classList.add('bg-blue-500');
-                    }
-
-                    selectedButton = this;
-                    selectedButton.classList.add('bg-red-500');
-                    selectedButton.classList.remove('bg-blue-500');
-
-                    const confirmationMessage = document.getElementById('confirmation-message');
-                    confirmationMessage.textContent = `¿Estás seguro de que deseas reservar ${spaceName} para el horario ${timeSlot}?`;
-                    document.getElementById('confirmation-modal').classList.remove('hidden');
-                });
-            });
         });
 
         // Confirmar reserva
-        document.getElementById('confirm-reservation').addEventListener('click', function() {
+        document.getElementById('confirm-reservation')?.addEventListener('click', function() {
             alert('Reserva confirmada con éxito.');
             if (selectedButton) {
                 selectedButton.disabled = true; // Deshabilitar el botón reservado
                 selectedButton.classList.remove('bg-red-500');
                 selectedButton.classList.add('bg-gray-500'); // Cambiar el color a gris para indicar que está reservado
+                selectedButton.textContent = 'Reservado'; // Cambiar texto
             }
-            document.getElementById('confirmation-modal').classList.add('hidden');
+            document.getElementById('confirmation-modal')?.classList.add('hidden');
         });
 
         // Cancelar reserva
-        document.getElementById('cancel-reservation').addEventListener('click', function() {
+        document.getElementById('cancel-reservation')?.addEventListener('click', function() {
+            document.getElementById('confirmation-modal')?.classList.add('hidden');
             if (selectedButton) {
                 selectedButton.classList.remove('bg-red-500');
-                selectedButton.classList.add('bg-blue-500'); // Volver al color original
+                selectedButton.classList.add('bg-blue-500'); // Volver a su color original
             }
-            document.getElementById('confirmation-modal').classList.add('hidden');
         });
     </script>
 </body>
