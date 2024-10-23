@@ -1,41 +1,8 @@
 ---
-// src/components/Dashboard.astro
-
-import GraficoReservas from './GraficoReservas'; // Asegúrate de que la ruta sea correcta
-
-const reservasHoyData = [12]; // Datos de ejemplo
-const reservasMesData = [30, 20, 15, 40]; // Datos de ejemplo para un mes
-const tiposEspacioData = [10, 20, 15]; // Datos de ejemplo para tipos de espacio
-const comentariosData = [5, 10, 7]; // Datos de ejemplo para comentarios
-
-const labelsReservasHoy = ['Reservas'];
-const labelsReservasMes = ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'];
-const labelsTiposEspacio = ['Oficinas', 'Salas de Reunión', 'Espacios Comunes'];
-const labelsComentarios = ['Comentarios Positivos', 'Comentarios Negativos', 'Comentarios Neutros'];
+// src/components/DashboardCard.astro
+const { title, content } = Astro.props;
 ---
-
-<div>
-  <h2 class="text-2xl font-semibold mb-4">Dashboard</h2>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-    <div class="bg-white shadow rounded-lg p-4">
-      <h3 class="text-lg font-bold">Reservas Hoy</h3>
-      <GraficoReservas id="reservasHoyChart" label="Reservas Hoy" data={reservasHoyData} labels={labelsReservasHoy} />
-    </div>
-    <div class="bg-white shadow rounded-lg p-4">
-      <h3 class="text-lg font-bold">Reservas Este Mes</h3>
-      <GraficoReservas id="reservasMesChart" label="Reservas Este Mes" data={reservasMesData} labels={labelsReservasMes} />
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-    <div class="bg-white shadow rounded-lg p-4">
-      <h3 class="text-lg font-bold">Reservas por Tipo de Espacio</h3>
-      <GraficoReservas id="tipoEspacioChart" label="Reservas por Tipo de Espacio" data={tiposEspacioData} labels={labelsTiposEspacio} />
-    </div>
-    <div class="bg-white shadow rounded-lg p-4">
-      <h3 class="text-lg font-bold">Comentarios</h3>
-      <GraficoReservas id="comentariosChart" label="Comentarios" data={comentariosData} labels={labelsComentarios} />
-    </div>
-  </div>
+<div class="bg-white shadow-md rounded-lg p-5 mb-5">
+    <h2 class="text-xl font-semibold mb-3">{title}</h2>
+    <div>{content}</div>
 </div>

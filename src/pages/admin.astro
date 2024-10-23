@@ -1,21 +1,44 @@
 ---
-// src/pages/index.astro
-
+// src/pages/admin.astro
 import SlidebarAdmin from '../components/Slidebar_Admin.astro';
-import Dashboard from '../components/Dashboard.astro';
-import '../styles/global.css';
-import React from 'react'; // Asegúrate de tener React importado
+import DashboardCard from '../components/Dashboard.astro';
 
+const reservasHoy = [
+    { espacio: 'Sala A', reservas: 10 },
+    { espacio: 'Sala B', reservas: 5 },
+];
+
+const reservasPorTipo = [
+    { tipo: 'Oficina', reservas: 15 },
+    { tipo: 'Sala de Reunión', reservas: 8 },
+];
+
+// Funciones para mostrar reservas
+function mostrarReservasHoy() {
+    return reservasHoy.map(reserva => `<li>${reserva.espacio}: ${reserva.reservas} reservas</li>`).join('');
+}
+
+function mostrarReservasPorTipo() {
+    return reservasPorTipo.map(reserva => `<li>${reserva.tipo}: ${reserva.reservas} reservas</li>`).join('');
+}
 ---
 
-<div class="flex">
-  <!-- Sidebar -->
-  <aside class="w-64 h-screen bg-gray-800 text-white">
-    <SlidebarAdmin />
-  </aside>
-
-  <!-- Main Content -->
-  <main class="flex-1 p-4">
-    <Dashboard /> <!-- Aquí se renderiza el Dashboard -->
-  </main>
-</div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Admin Dashboard</title>
+</head>
+<body class="bg-gray-100">
+    <div class="flex">
+        <SlidebarAdmin />
+        <div class="flex-grow p-5">
+            <h1 class="text-2xl font-bold mb-5">DASHBOARD</h1>
+            <DashboardCard title="Reservas Hoy" content={mostrarReservasHoy()} />
+            <DashboardCard title="Reservas por Tipo de Espacio" content={mostrarReservasPorTipo()} />
+        </div>
+    </div>
+</body>
+</html>
