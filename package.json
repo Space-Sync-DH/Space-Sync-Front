@@ -19,6 +19,7 @@
     "flowbite": "^2.5.2",
     "flowbite-react": "^0.10.2",
     "lucide-react": "^0.447.0",
+    "react-calendar": "^5.0.0",
     "solid-js": "^1.9.2"
   },
   "devDependencies": {
