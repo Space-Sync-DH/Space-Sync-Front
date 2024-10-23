@@ -1,0 +1,46 @@
+---
+// src/components/Tables.astro
+
+import SlidebarAdmin from '../components/Slidebar_Admin.astro';
+import '../styles/global.css';
+---
+
+<div class="flex">
+  <!-- Sidebar -->
+  <aside class="w-64 h-screen bg-gray-800 text-white">
+    <SlidebarAdmin />
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-4">
+    <h2 class="text-2xl font-semibold mb-4">Reservas Realizadas</h2>
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-800 text-white">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium uppercase">Nombre</th>
+          <th class="px-6 py-3 text-left text-xs font-medium uppercase">Fecha</th>
+          <th class="px-6 py-3 text-left text-xs font-medium uppercase">Hora Inicio</th>
+          <th class="px-6 py-3 text-left text-xs font-medium uppercase">Hora Fin</th>
+          <th class="px-6 py-3 text-left text-xs font-medium uppercase">Estado</th>
+          <th class="px-6 py-3 text-left text-xs font-medium uppercase">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Aquí puedes mapear las reservas -->
+        <!-- Ejemplo de fila de reservas -->
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Juan Pérez</td>
+          <td class="px-6 py-4 whitespace-nowrap">2024-10-23</td>
+          <td class="px-6 py-4 whitespace-nowrap">09:00</td>
+          <td class="px-6 py-4 whitespace-nowrap">10:00</td>
+          <td class="px-6 py-4 whitespace-nowrap">Confirmada</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <button class="text-blue-500 hover:text-blue-700">Editar</button>
+            <button class="text-red-500 hover:text-red-700">Eliminar</button>
+          </td>
+        </tr>
+        <!-- Más filas -->
+      </tbody>
+    </table>
+  </main>
+</div>
