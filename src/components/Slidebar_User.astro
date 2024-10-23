@@ -1,16 +1,68 @@
 ---
+import { FaCalendarCheck, FaHistory, FaCommentDots, FaHeadset, FaSignOutAlt } from 'react-icons/fa';
 import '../styles/global.css';
 ---
-<!-- src/components/Slidebar_User.astro -->
-<aside class="w-64 h-screen bg-gray-800 text-white fixed">
-    <div class="p-4">
-        <h2 class="text-lg font-semibold">Menú</h2>
-        <ul class="mt-4">
-            <li><a href="/reserva" class="block py-2">¡Haz tú reserva!</a></li>
-            <li><a href="/historial" class="block py-2">Mis Reservas</a></li>
-            <li><a href="/comentarios" class="block py-2">Comentarios</a></li>
-            <li><a href="/soporte" class="block py-2">Soporte</a></li>
-            
+
+<aside class="w-64 h-screen bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 text-white fixed">
+    <div class="p-6">
+        <h2 class="text-3xl font-semibold mb-8">Menú</h2>
+        <ul class="mt-4 space-y-6">
+            <li>
+                <a href="/reserva" class="flex items-center py-4 hover:scale-105 transition-transform duration-200">
+                    <FaCalendarCheck className="mr-8 text-2xl" /> <!-- Aumento de margen con className -->
+                    <span class="text-xl">¡Haz tu reserva!</span>
+                </a>
+            </li>
+            <li>
+                <a href="/historial" class="flex items-center py-4 hover:scale-105 transition-transform duration-200">
+                    <FaHistory className="mr-8 text-2xl" /> <!-- Aumento de margen con className -->
+                    <span class="text-xl">Mis Reservas</span>
+                </a>
+            </li>
+            <li>
+                <a href="/comentario_user" class="flex items-center py-4 hover:scale-105 transition-transform duration-200">
+                    <FaCommentDots className="mr-8 text-2xl" /> <!-- Aumento de margen con className -->
+                    <span class="text-xl">Comentarios</span>
+                </a>
+            </li>
+            <li>
+                <a href="/soporte" class="flex items-center py-4 hover:scale-105 transition-transform duration-200">
+                    <FaHeadset className="mr-8 text-2xl" /> <!-- Aumento de margen con className -->
+                    <span class="text-xl">Soporte</span>
+                </a>
+            </li>
+            <!-- Botón de Cerrar Sesión -->
+            <li>
+                <button onclick="toggleLogoutPopup()" class="flex items-center py-4 hover:scale-105 transition-transform duration-200">
+                    <FaSignOutAlt className="mr-8 text-2xl" /> <!-- Aumento de margen con className -->
+                    <span class="text-xl">Cerrar Sesión</span>
+                </button>
+            </li>
         </ul>
     </div>
+
+    <!-- Popup de confirmación -->
+    <div id="logoutPopup" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded shadow-lg text-center">
+            <h3 class="text-lg font-semibold">¿Estás seguro de cerrar sesión?</h3>
+            <div class="mt-4">
+                <button onclick="confirmLogout()" class="bg-red-500 text-white px-4 py-2 rounded mr-2">Sí</button>
+                <button onclick="toggleLogoutPopup()" class="bg-gray-300 px-4 py-2 rounded">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleLogoutPopup() {
+            const popup = document.getElementById('logoutPopup');
+            if (popup) {
+                popup.classList.toggle('hidden');
+            }
+        }
+
+        function confirmLogout() {
+            // Lógica para cerrar sesión
+            window.location.href = '/'; // Redirigir al index
+        }
+    </script>
 </aside>

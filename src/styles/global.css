@@ -50,3 +50,23 @@ button.reserve-button {
 
 
 
+/* styles/global.css */
+@keyframes gradient {
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
+}
+
+aside {
+  background: linear-gradient(270deg, #38b2ac, #68d391, #3182ce);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+
