@@ -42,7 +42,11 @@ h1, h2, h3, .bebas-font { /* Clases o elementos que usarán Bebas Neue */
   transform: scale(1.1); /* Aumenta el tamaño de la imagen */
 }
 
-
+button.reserve-button {
+  margin: 0; /* Elimina cualquier margen adicional */
+  padding: 0.25rem 0.5rem; /* Reduce el tamaño de los botones */
+  width: auto; /* Ajusta el ancho de los botones al contenido */
+}
 
 
 

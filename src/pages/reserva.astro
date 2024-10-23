@@ -36,10 +36,10 @@ import '../styles/global.css';
                         <label for="capacity" class="block text-gray-700">Capacidad</label>
                         <select id="capacity" required class="mt-1 p-2 border border-gray-300 rounded w-full">
                             <option value="" disabled selected>Selecciona la capacidad</option>
-                            <option value="2">2 personas</option>
-                            <option value="4">4 personas</option>
-                            <option value="6">6 personas</option>
-                            <option value="8">8 personas</option>
+                            <option value="2">1 - 2 personas</option>
+                            <option value="4">3 - 4 personas</option>
+                            <option value="6">5 - 6 personas</option>
+                            <option value="10">7 - 10 personas</option>
                         </select>
                     </div>
                     <button type="submit" class="bg-blue-600 text-white p-2 rounded">Buscar Espacios</button>
@@ -48,7 +48,7 @@ import '../styles/global.css';
                 <div id="available-spaces" class="bg-white shadow-md rounded-lg p-6 mt-6">
                     <h2 class="text-xl font-semibold mb-4">Espacios Disponibles</h2>
                     <div id="date-display" class="mb-4 text-lg font-semibold hidden"></div>
-                    <ul id="spaces-list" class="space-y-4">
+                    <ul id="spaces-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <!-- Aquí se llenarán los espacios disponibles -->
                     </ul>
                 </div>
@@ -92,9 +92,10 @@ import '../styles/global.css';
 
             // Simulando la búsqueda de espacios disponibles con detalles
             const availableSpaces = [
-                { name: "Sala de Reuniones A", capacity: 4, chairs: 4, table: true, tv: true, notebook: true, location: "Piso 1", description: "Sala ideal para reuniones corporativas." },
-                { name: "Sala de Capacitación B", capacity: 6, chairs: 6, table: true, tv: false, notebook: true, location: "Piso 2", description: "Espacio para talleres y capacitaciones." },
-                { name: "Espacio Creativo C", capacity: 2, chairs: 2, table: false, tv: false, notebook: false, location: "Piso 1", description: "Ideal para brainstorming." }
+                { name: "Sala de Reuniones A", capacity: 2, chairs: 2, table: true, tv: true, notebook: true, location: "Piso 1", description: "Sala ideal para reuniones corporativas." },
+                { name: "Sala de Capacitación B", capacity: 10, chairs: 10, table: true, tv: false, notebook: true, location: "Piso 2", description: "Espacio para talleres y capacitaciones." },
+                { name: "Espacio Creativo D", capacity: 10, chairs: 0, table: false, tv: true, notebook: false, location: "Piso 3", description: "Ideal para pausas recreativas" },
+                { name: "Espacio Creativo E", capacity: 6, chairs: 6, table: false, tv: true, notebook: true, location: "Piso 1", description: "Ideal para brainstorming." }
             ].filter(space => space.capacity <= Number(capacity)); // Convertir capacity a número
 
             const spacesList = document.getElementById('spaces-list') as HTMLElement | null;
@@ -105,18 +106,21 @@ import '../styles/global.css';
                     availableSpaces.forEach(space => {
                         const listItem = document.createElement('li');
                         listItem.className = 'p-4 border border-gray-300 rounded';
-                        listItem.innerHTML = `
-                            <strong>${space.name}</strong> - Capacidad: ${space.capacity} personas<br>
+                        listItem.innerHTML = 
+                            `<strong>${space.name}</strong> - Capacidad: ${space.capacity} personas<br>
                             Detalles: ${space.chairs} sillas, Mesa: ${space.table ? 'Sí' : 'No'}, TV: ${space.tv ? 'Sí' : 'No'}, Notebook: ${space.notebook ? 'Sí' : 'No'}<br>
                             Ubicación: ${space.location} <br>
                             Descripción: ${space.description} <br>
-                            <div class="grid grid-cols-4 gap-4 mt-2">
-                                <button class="bg-blue-500 text-white p-2 rounded reserve-button" data-space="${space.name}" data-time="8:00 - 9:30">8:00 - 9:30</button>
-                                <button class="bg-blue-500 text-white p-2 rounded reserve-button" data-space="${space.name}" data-time="9:40 - 10:50">9:40 - 10:50</button>
-                                <button class="bg-blue-500 text-white p-2 rounded reserve-button" data-space="${space.name}" data-time="11:00 - 12:10">11:00 - 12:10</button>
-                                <button class="bg-blue-500 text-white p-2 rounded reserve-button" data-space="${space.name}" data-time="12:20 - 13:30">12:20 - 13:30</button>
-                            </div>
-                        `;
+                            <div class="flex flex-wrap gap-1 mt-2">
+                                <button class="bg-blue-500 text-white px-2 py-1 text-sm rounded reserve-button" data-space="${space.name}" data-time="8:00 - 9:30">8:00 - 9:30</button>
+                                <button class="bg-blue-500 text-white px-2 py-1 text-sm rounded reserve-button" data-space="${space.name}" data-time="9:40 - 10:50">9:40 - 10:50</button>
+                                <button class="bg-blue-500 text-white px-2 py-1 text-sm rounded reserve-button" data-space="${space.name}" data-time="11:00 - 12:10">11:00 - 12:10</button>
+                                <button class="bg-blue-500 text-white px-2 py-1 text-sm rounded reserve-button" data-space="${space.name}" data-time="12:20 - 13:30">12:20 - 13:30</button>
+                                <button class="bg-blue-500 text-white px-2 py-1 text-sm rounded reserve-button" data-space="${space.name}" data-time="13:40 - 14:50">13:40 - 14:50</button>
+                                <button class="bg-blue-500 text-white px-2 py-1 text-sm rounded reserve-button" data-space="${space.name}" data-time="15:00 - 16:30">15:00 - 16:30</button>
+                                <button class="bg-blue-500 text-white px-2 py-1 text-sm rounded reserve-button" data-space="${space.name}" data-time="16:40 - 17:50">16:40 - 17:50</button>
+                                <button class="bg-blue-500 text-white px-2 py-1 text-sm rounded reserve-button" data-space="${space.name}" data-time="18:00 - 18:30">18:00 - 18:30</button>
+                            </div>`;
                         spacesList.appendChild(listItem);
                     });
                 } else {
@@ -129,55 +133,30 @@ import '../styles/global.css';
                     button.addEventListener('click', function(this: HTMLButtonElement) {
                         const spaceName = this.getAttribute('data-space');
                         const timeSlot = this.getAttribute('data-time');
-
-                        // Marcar el botón seleccionado y deshabilitar otros
-                        if (selectedButton) {
-                            selectedButton.classList.remove('bg-red-500');
-                            selectedButton.classList.add('bg-blue-500');
-                        }
-                        selectedButton = this;
-                        selectedButton.classList.remove('bg-blue-500');
-                        selectedButton.classList.add('bg-red-500');
-                        selectedButton.textContent = 'Seleccionado';
-
-                        // Mostrar el modal de confirmación
-                        const confirmationModal = document.getElementById('confirmation-modal') as HTMLElement | null;
-                        if (confirmationModal) {
-                            confirmationModal.classList.remove('hidden');
+                        if (spaceName && timeSlot) {
+                            selectedButton = this; // Guardar la franja horaria seleccionada
+                            const confirmationMessage = document.getElementById('confirmation-message') as HTMLElement | null;
+                            if (confirmationMessage) {
+                                confirmationMessage.textContent = `Confirmar reserva para ${spaceName} en la franja horaria ${timeSlot}?`;
+                            }
+                            document.getElementById('confirmation-modal')?.classList.remove('hidden'); // Mostrar modal
                         }
                     });
                 });
             }
         });
 
-        // Confirmar reserva
         document.getElementById('confirm-reservation')?.addEventListener('click', function() {
-            alert('Reserva confirmada con éxito.');
             if (selectedButton) {
-                selectedButton.disabled = true; // Deshabilitar el botón reservado
-                selectedButton.classList.remove('bg-red-500');
-                selectedButton.classList.add('bg-red-500'); // Mantener el color rojo para indicar que está reservado
-                selectedButton.classList.add('text-black'); // Cambiar texto a negro
-                selectedButton.textContent = 'Reservado'; // Cambiar texto
-            }
-            // Ocultar el modal
-            const confirmationModal = document.getElementById('confirmation-modal') as HTMLElement | null;
-            if (confirmationModal) {
-                confirmationModal.classList.add('hidden');
+                selectedButton.classList.add('bg-red-600', 'text-white');
+                selectedButton.classList.remove('bg-blue-500');
+                selectedButton.innerText = 'Reservado';
+                document.getElementById('confirmation-modal')?.classList.add('hidden'); // Ocultar modal
             }
         });
 
-        // Cancelar reserva
         document.getElementById('cancel-reservation')?.addEventListener('click', function() {
-            const confirmationModal = document.getElementById('confirmation-modal') as HTMLElement | null;
-            if (confirmationModal) {
-                confirmationModal.classList.add('hidden');
-            }
-            if (selectedButton) {
-                selectedButton.classList.remove('bg-red-500');
-                selectedButton.classList.add('bg-blue-500');
-                selectedButton.textContent = selectedButton.getAttribute('data-time'); // Volver al texto original
-            }
+            document.getElementById('confirmation-modal')?.classList.add('hidden'); // Ocultar modal
         });
     </script>
 </body>

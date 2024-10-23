@@ -1,0 +1,20 @@
+---
+import Navbar from '../components/Navbar_User.astro';
+import Sidebar from '../components/Slidebar_User.astro';
+import '../styles/global.css';
+---
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva de Espacios</title>
+    <link rel="icon" href="/logo.png" type="image/x-icon" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.4.1/flowbite.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 text-black font-sans">
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <Sidebar />
