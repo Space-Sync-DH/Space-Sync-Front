@@ -4,6 +4,8 @@
 import SlidebarAdmin from '../components/Slidebar_Admin.astro';
 import Dashboard from '../components/Dashboard.astro';
 import '../styles/global.css';
+import React from 'react'; // Asegúrate de tener React importado
+
 ---
 
 <div class="flex">
@@ -14,6 +16,6 @@ import '../styles/global.css';
 
   <!-- Main Content -->
   <main class="flex-1 p-4">
-    <Dashboard />
+    <Dashboard /> <!-- Aquí se renderiza el Dashboard -->
   </main>
 </div>

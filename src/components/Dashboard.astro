@@ -1,5 +1,17 @@
 ---
 // src/components/Dashboard.astro
+
+import GraficoReservas from './GraficoReservas'; // Asegúrate de que la ruta sea correcta
+
+const reservasHoyData = [12]; // Datos de ejemplo
+const reservasMesData = [30, 20, 15, 40]; // Datos de ejemplo para un mes
+const tiposEspacioData = [10, 20, 15]; // Datos de ejemplo para tipos de espacio
+const comentariosData = [5, 10, 7]; // Datos de ejemplo para comentarios
+
+const labelsReservasHoy = ['Reservas'];
+const labelsReservasMes = ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'];
+const labelsTiposEspacio = ['Oficinas', 'Salas de Reunión', 'Espacios Comunes'];
+const labelsComentarios = ['Comentarios Positivos', 'Comentarios Negativos', 'Comentarios Neutros'];
 ---
 
 <div>
@@ -8,43 +20,22 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
     <div class="bg-white shadow rounded-lg p-4">
       <h3 class="text-lg font-bold">Reservas Hoy</h3>
-      <canvas id="reservasHoyChart"></canvas>
+      <GraficoReservas id="reservasHoyChart" label="Reservas Hoy" data={reservasHoyData} labels={labelsReservasHoy} />
     </div>
     <div class="bg-white shadow rounded-lg p-4">
       <h3 class="text-lg font-bold">Reservas Este Mes</h3>
-      <canvas id="reservasMesChart"></canvas>
+      <GraficoReservas id="reservasMesChart" label="Reservas Este Mes" data={reservasMesData} labels={labelsReservasMes} />
     </div>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
     <div class="bg-white shadow rounded-lg p-4">
       <h3 class="text-lg font-bold">Reservas por Tipo de Espacio</h3>
-      <canvas id="tipoEspacioChart"></canvas>
+      <GraficoReservas id="tipoEspacioChart" label="Reservas por Tipo de Espacio" data={tiposEspacioData} labels={labelsTiposEspacio} />
     </div>
     <div class="bg-white shadow rounded-lg p-4">
       <h3 class="text-lg font-bold">Comentarios</h3>
-      <canvas id="ingresosChart"></canvas>
+      <GraficoReservas id="comentariosChart" label="Comentarios" data={comentariosData} labels={labelsComentarios} />
     </div>
   </div>
 </div>
-
-<script>
-  // Aquí va el código de inicialización de los gráficos
-  const ctxHoy = document.getElementById('reservasHoyChart').getContext('2d');
-  const reservasHoyChart = new Chart(ctxHoy, {
-    type: 'bar',
-    data: {
-      labels: ['Reservas'],
-      datasets: [{
-        label: 'Reservas Hoy',
-        data: [12], // Cambia esto por datos reales
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-      }]
-    },
-    options: {
-      responsive: true,
-    }
-  });
-
-  // Agrega los otros gráficos de manera similar...
-</script>
