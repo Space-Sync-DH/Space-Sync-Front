@@ -1,6 +1,6 @@
 ---
 import Navbar from '../components/Navbar_User.astro';
-import Sidebar from '../components/Slidebar_User.astro';
+import Sidebar from '../components/Sidebar_User.astro';
 import '../styles/global.css';
 ---
 
@@ -131,16 +131,14 @@ import '../styles/global.css';
                 const reserveButtons = document.querySelectorAll('.reserve-button');
                 reserveButtons.forEach(button => {
                     button.addEventListener('click', function(this: HTMLButtonElement) {
+                        selectedButton = this;
                         const spaceName = this.getAttribute('data-space');
                         const timeSlot = this.getAttribute('data-time');
-                        if (spaceName && timeSlot) {
-                            selectedButton = this; // Guardar la franja horaria seleccionada
-                            const confirmationMessage = document.getElementById('confirmation-message') as HTMLElement | null;
-                            if (confirmationMessage) {
-                                confirmationMessage.textContent = `Confirmar reserva para ${spaceName} en la franja horaria ${timeSlot}?`;
-                            }
-                            document.getElementById('confirmation-modal')?.classList.remove('hidden'); // Mostrar modal
+                        const confirmationMessage = document.getElementById('confirmation-message') as HTMLElement | null;
+                        if (confirmationMessage) {
+                            confirmationMessage.textContent = `Estás reservando ${spaceName} para el horario ${timeSlot}.`;
                         }
+                        document.getElementById('confirmation-modal')!.classList.remove('hidden'); // Mostrar modal
                     });
                 });
             }
@@ -148,15 +146,32 @@ import '../styles/global.css';
 
         document.getElementById('confirm-reservation')?.addEventListener('click', function() {
             if (selectedButton) {
-                selectedButton.classList.add('bg-red-600', 'text-white');
-                selectedButton.classList.remove('bg-blue-500');
-                selectedButton.innerText = 'Reservado';
-                document.getElementById('confirmation-modal')?.classList.add('hidden'); // Ocultar modal
+                // Aquí puedes agregar la lógica para guardar la reserva
+                const spaceName = selectedButton.getAttribute('data-space');
+                const timeSlot = selectedButton.getAttribute('data-time');
+                alert(`Reserva confirmada para ${spaceName} en el horario ${timeSlot}.`);
+
+                // Aquí puedes agregar la lógica para redirigir al historial
+                const dateInput = document.getElementById('datepicker') as HTMLInputElement | null;
+                const capacityInput = document.getElementById('capacity') as HTMLSelectElement | null;
+
+                if (!dateInput || !capacityInput) return; // Verifica que ambos elementos existan
+
+                const date = dateInput.value;
+                const capacity = capacityInput.value;
+
+                // Guardar la reserva en localStorage
+                const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+                reservations.push({ space: spaceName, date, time: timeSlot, capacity });
+                localStorage.setItem('reservations', JSON.stringify(reservations));
+
+                // Redirigir al historial
+                window.location.href = '/historial';
             }
         });
 
         document.getElementById('cancel-reservation')?.addEventListener('click', function() {
-            document.getElementById('confirmation-modal')?.classList.add('hidden'); // Ocultar modal
+            document.getElementById('confirmation-modal')!.classList.add('hidden'); // Ocultar modal
         });
     </script>
 </body>

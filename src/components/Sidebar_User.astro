@@ -1,6 +1,5 @@
 ---
 import { FaCalendarCheck, FaHistory, FaCommentDots, FaHeadset, FaSignOutAlt } from 'react-icons/fa';
-import '../styles/global.css';
 ---
 
 <aside class="w-64 h-screen bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 text-white fixed">
@@ -9,32 +8,31 @@ import '../styles/global.css';
         <ul class="mt-4 space-y-6">
             <li>
                 <a href="/reserva" class="flex items-center py-4 hover:scale-105 transition-transform duration-200">
-                    <FaCalendarCheck className="mr-8 text-2xl" /> <!-- Aumento de margen con className -->
+                    <FaCalendarCheck className="mr-8 text-2xl" />
                     <span class="text-xl">¡Haz tu reserva!</span>
                 </a>
             </li>
             <li>
                 <a href="/historial" class="flex items-center py-4 hover:scale-105 transition-transform duration-200">
-                    <FaHistory className="mr-8 text-2xl" /> <!-- Aumento de margen con className -->
+                    <FaHistory className="mr-8 text-2xl" />
                     <span class="text-xl">Mis Reservas</span>
                 </a>
             </li>
             <li>
                 <a href="/comentario_user" class="flex items-center py-4 hover:scale-105 transition-transform duration-200">
-                    <FaCommentDots className="mr-8 text-2xl" /> <!-- Aumento de margen con className -->
+                    <FaCommentDots className="mr-8 text-2xl" />
                     <span class="text-xl">Comentarios</span>
                 </a>
             </li>
             <li>
                 <a href="/soporte" class="flex items-center py-4 hover:scale-105 transition-transform duration-200">
-                    <FaHeadset className="mr-8 text-2xl" /> <!-- Aumento de margen con className -->
+                    <FaHeadset className="mr-8 text-2xl" />
                     <span class="text-xl">Soporte</span>
                 </a>
             </li>
-            <!-- Botón de Cerrar Sesión -->
             <li>
                 <button onclick="toggleLogoutPopup()" class="flex items-center py-4 hover:scale-105 transition-transform duration-200">
-                    <FaSignOutAlt className="mr-8 text-2xl" /> <!-- Aumento de margen con className -->
+                    <FaSignOutAlt className="mr-8 text-2xl" />
                     <span class="text-xl">Cerrar Sesión</span>
                 </button>
             </li>
@@ -61,8 +59,7 @@ import '../styles/global.css';
         }
 
         function confirmLogout() {
-            // Lógica para cerrar sesión
-            window.location.href = '/'; // Redirigir al index
+            window.location.href = '/';
         }
     </script>
 </aside>

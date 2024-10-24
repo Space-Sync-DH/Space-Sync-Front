@@ -1,6 +1,6 @@
 ---
 import Navbar from '../components/Navbar_User.astro';
-import Sidebar from '../components/Slidebar_User.astro';
+import Sidebar from '../components/Sidebar_User.astro';
 import '../styles/global.css';
 ---
 
@@ -8,13 +8,106 @@ import '../styles/global.css';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reserva de Espacios</title>
+    <title>Historial de Reservas</title>
     <link rel="icon" href="/logo.png" type="image/x-icon" />
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.4.1/flowbite.min.css" rel="stylesheet">
 </head>
 <body class="bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 text-black font-sans">
 
     <div class="flex">
         <!-- Sidebar -->
         <Sidebar />
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col ml-64"> <!-- Agregar margen para el sidebar -->
+            <!-- Navbar -->
+            <Navbar />
+
+            <div class="container mx-auto p-8 flex-1">
+                <h2 class="text-2xl font-semibold mb-4">Historial de Reservas</h2>
+
+                <table class="min-w-full border border-gray-300">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="p-4 text-lg font-bold">Espacio</th>
+                            <th class="p-4 text-lg font-bold">Fecha</th>
+                            <th class="p-4 text-lg font-bold">Horario</th>
+                            <th class="p-4 text-lg font-bold">Capacidad</th>
+                            <th class="p-4 text-lg font-bold">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservations-list">
+                        <!-- Aquí se llenarán las reservas -->
+                    </tbody>
+                </table>
+
+                <div id="confirmation-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div class="bg-white p-6 rounded shadow-md">
+                        <h3 class="text-lg font-semibold">¿Estás seguro de que deseas cancelar esta reserva?</h3>
+                        <div class="mt-4">
+                            <button id="confirm-cancel" class="bg-red-500 text-white px-4 py-2 rounded">Cancelar Reserva</button>
+                            <button id="cancel-cancel" class="bg-gray-300 px-4 py-2 rounded ml-2">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reservationsList = document.getElementById('reservations-list')!;
+            const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+            let selectedReservation = null; // Variable para guardar la reserva seleccionada
+
+            if (reservations.length > 0) {
+                reservations.forEach((reservation) => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b';
+                    row.innerHTML = `
+                        <td class="p-4">${reservation.space}</td>
+                        <td class="p-4">${reservation.date}</td>
+                        <td class="p-4">${reservation.time}</td>
+                        <td class="p-4">${reservation.capacity} personas</td>
+                        <td class="p-4">
+                            <button class="bg-red-500 text-white px-4 py-1 rounded cancel-button" data-space="${reservation.space}" data-date="${reservation.date}" data-time="${reservation.time}">Cancelar</button>
+                        </td>
+                    `;
+                    reservationsList.appendChild(row);
+                });
+            } else {
+                reservationsList.innerHTML = '<tr><td colspan="5" class="p-4 text-gray-500 text-center">No hay reservas en el historial.</td></tr>';
+            }
+
+            // Manejo del botón cancelar
+            document.querySelectorAll('.cancel-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    selectedReservation = {
+                        space: button.getAttribute('data-space'),
+                        date: button.getAttribute('data-date'),
+                        time: button.getAttribute('data-time')
+                    };
+                    document.getElementById('confirmation-modal')!.classList.remove('hidden'); // Mostrar modal
+                });
+            });
+
+            document.getElementById('confirm-cancel')?.addEventListener('click', function() {
+                if (selectedReservation) {
+                    // Eliminar la reserva del localStorage
+                    const updatedReservations = reservations.filter(reservation => 
+                        !(reservation.space === selectedReservation.space && 
+                          reservation.date === selectedReservation.date && 
+                          reservation.time === selectedReservation.time)
+                    );
+                    localStorage.setItem('reservations', JSON.stringify(updatedReservations));
+                    window.location.reload(); // Recargar la página para ver los cambios
+                }
+            });
+
+            document.getElementById('cancel-cancel')?.addEventListener('click', function() {
+                document.getElementById('confirmation-modal')!.classList.add('hidden'); // Ocultar modal
+            });
+        });
+    </script>
+</body>
+</html>

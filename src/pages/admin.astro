@@ -1,7 +1,8 @@
 ---
 // src/pages/admin.astro
-import SlidebarAdmin from '../components/Slidebar_Admin.astro';
+import SlidebarAdmin from '../components/Sidebar_Admin.astro';
 import DashboardCard from '../components/Dashboard.astro';
+import SidebarAdmin from '../components/Sidebar_Admin.astro';
 
 const reservasHoy = [
     { espacio: 'Sala A', reservas: 10 },
@@ -33,7 +34,7 @@ function mostrarReservasPorTipo() {
 </head>
 <body class="bg-gray-100">
     <div class="flex">
-        <SlidebarAdmin />
+        <SidebarAdmin />
         <div class="flex-grow p-5">
             <h1 class="text-2xl font-bold mb-5">DASHBOARD</h1>
             <DashboardCard title="Reservas Hoy" content={mostrarReservasHoy()} />
