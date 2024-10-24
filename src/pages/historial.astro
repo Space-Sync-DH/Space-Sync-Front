@@ -2,6 +2,15 @@
 import Navbar from '../components/Navbar_User.astro';
 import Sidebar from '../components/Sidebar_User.astro';
 import '../styles/global.css';
+
+// Definición de la interfaz Reservation
+interface Reservation {
+    space: string;
+    date: string;
+    time: string;
+    capacity: number;
+}
+
 ---
 
 <html lang="es">
@@ -57,8 +66,8 @@ import '../styles/global.css';
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const reservationsList = document.getElementById('reservations-list')!;
-            const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
-            let selectedReservation = null; // Variable para guardar la reserva seleccionada
+            const reservations: Reservation[] = JSON.parse(localStorage.getItem('reservations') || '[]');
+            let selectedReservation: Reservation | null = null; // Variable para guardar la reserva seleccionada
 
             if (reservations.length > 0) {
                 reservations.forEach((reservation) => {
@@ -83,9 +92,10 @@ import '../styles/global.css';
             document.querySelectorAll('.cancel-button').forEach(button => {
                 button.addEventListener('click', function() {
                     selectedReservation = {
-                        space: button.getAttribute('data-space'),
-                        date: button.getAttribute('data-date'),
-                        time: button.getAttribute('data-time')
+                        space: button.getAttribute('data-space')!,
+                        date: button.getAttribute('data-date')!,
+                        time: button.getAttribute('data-time')!,
+                        capacity: 0 // Puedes asignar el valor correspondiente si lo necesitas
                     };
                     document.getElementById('confirmation-modal')!.classList.remove('hidden'); // Mostrar modal
                 });
